@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Gelasio&family=Inter:wght@400;500&display=swap");
+@import "@flaticon/flaticon-uicons/css/all/all";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Billabong';
+  src: url('/src/assets/fonts/Billabong.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@layer components {
+    .link {
+        @apply text-white hover:text-black hover:bg-grey px-4 block opacity-75 no-underline flex items-center px-4 text-[25px] gap-2 ml-4 max-md:justify-center max-md:-translate-x-1 max-sm:px-0;
+    }
+}
+
