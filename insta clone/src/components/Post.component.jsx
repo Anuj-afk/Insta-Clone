@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 function Post() {
     const [likeIcon, setLikeIcon] = useState("fi fi-rs-heart");
@@ -31,7 +31,10 @@ function Post() {
 
     return (
         <div>
-            <div className="card mb-3 max-w-72" style={{borderBottom:'0.5px solid darkgray'}}>
+            <div
+                className="card mb-3 max-w-[490px]"
+                style={{ borderBottom: "0.5px solid darkgray" }}
+            >
                 <div
                     className="card-header bg-transparent border-light"
                     style={{
@@ -39,10 +42,10 @@ function Post() {
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent:'space-between'
+                        justifyContent: "space-between",
                     }}
                 >
-                    <div style={{display:'flex',flexDirection:'row'}}>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
                         <img
                             className="profile-pic border-light"
                             src="https://imgs.search.brave.com/DG-lQwOpD6baSZBkzBK95jFiR5HptdTky7aTtnjEbaU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9kZWVw/YWkub3JnL3N0YXRp/Yy9pbWFnZXMvZG9s/cGhpbjMuc3Zn"
@@ -79,7 +82,7 @@ function Post() {
                     src="https://imgs.search.brave.com/iLMEW1KwR5cPiFFRxdRWsCGH107qJN0fScgf0YfvoxY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE0/OTI1MzQ1MTMwMDYt/Mzc3MTVmMzM2YTM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZpeGxp/Yj1yYi00LjAuMw"
                     className="card-img-top"
                     alt="..."
-                    style={{ width: "288px" }}
+                    style={{ width: "490px" }}
                 />
                 <div className="card-footer bg-transparent border-light">
                     <div

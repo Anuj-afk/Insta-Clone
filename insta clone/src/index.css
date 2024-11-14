@@ -13,7 +13,27 @@
 }
 @layer components {
     .link {
-        @apply text-white hover:text-black hover:bg-grey px-4 block opacity-75 no-underline flex items-center px-4 text-[25px] gap-2 ml-4 max-md:justify-center max-md:-translate-x-1 max-sm:px-0;
+        @apply mx-4 rounded-md text-white hover:bg-hover opacity-75 no-underline flex items-center px-4 text-[25px] gap-2 max-md:justify-center max-md:-translate-x-1 max-sm:px-0 h-10;
     }
+    .btn-dark{
+        @apply whitespace-nowrap bg-black text-white rounded-full py-3 px-6 text-xl capitalize hover:bg-opacity-80;
+    }
+
+    .btn-light{
+        @apply btn-dark bg-grey text-black;
+    }
+
+    .input-box {
+        @apply w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent placeholder:text-black;
+    }
+
+    input:disabled, input:disabled ~ .input-icon{
+        @apply opacity-50;
+    }
+
+    .input-icon{
+        @apply absolute left-4 top-1/2 -translate-y-1/2;
+    }
+
 }
 

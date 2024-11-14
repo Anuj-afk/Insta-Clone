@@ -3,6 +3,7 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         colors: {
+            "hover": "#242424",
             white: "#FFFFFF",
             black: "#000000",
             grey: "#F3F3F3",

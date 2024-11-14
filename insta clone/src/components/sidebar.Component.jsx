@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, Outlet } from "react-router-dom"; // Example using react-icons
 import AnimationWrapper from "../common/page.animation";
+import SideNavigation from "./sidebar.navigation.component";
 
 const Navbar = () => {
+
     const [isMedium, setIsMedium] = useState(window.innerWidth <= 768);
     const [isSmall, setIsSmall] = useState(window.innerWidth <= 640);
 
@@ -30,133 +32,49 @@ const Navbar = () => {
                             <i className="fi fi-rr-search pointer-events-none text-white absolute translate-y-[6px] translate-x-[6px] text-xl"></i>
                             <input type="text" placeholder="Search" className=" bg-dark-grey rounded-md placeholder:text-white placeholder:ml-8 pl-8 my-auto h-8"/>
                         </div>
-
-                        <Link
-                            className="link my-auto mr-4"
-                        >
-                            <i class="fi fi-rr-heart"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Notification</p>
-                        </Link>
+                        <SideNavigation to="/Notification" className="my-auto mr-4" image="fi fi-rr-heart" text="Notification"></SideNavigation>
                     </div>
                     <div className="flex-1 overflow-y-auto bg-black items-center flex justify-center">
                         <Outlet />
                     </div>
                     <div className="bg-black sticky flex text-white border-t border-dark-grey min-w-fit max-sm:flex-row duration-300  h-16 justify-around">
-
-                        <Link
-                            className="link"
-                        >
-                            <i className="fi fi-rr-house-blank"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Home</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-search"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Search</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-tr-compass-alt"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Explore</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-tr-films"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Reels</p>
-                        </Link>
-   
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-square-plus"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Create</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-user"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Profile</p>
-                        </Link>
+                        <SideNavigation to="/" image="fi fi-rr-house-blank" text="Home"></SideNavigation>
+                        <SideNavigation to="/Search" image="fi fi-rr-search" text="Search"></SideNavigation>
+                        <SideNavigation to="/Explore" image="fi fi-tr-compass-alt" text="Explore"></SideNavigation>
+                        <SideNavigation to="/Reels" image="fi fi-tr-films" text="Reels"></SideNavigation>
+                        <SideNavigation to="/Create" image="fi fi-rr-square-plus" text="Create"></SideNavigation>
+                        <SideNavigation to="profile" image="fi fi-rr-user" text="Profile"></SideNavigation>
                     </div>
                 </div>
             ) : (
                 <div className="flex h-screen flex-row">
                     {/* Navbar */}
-                    <div className="bg-black sticky flex flex-col gap-8 text-white w-[20rem] border-r border-dark-grey max-md:w-[4rem] max-sm:flex-row duration-300 max-sm:w-full max-sm:h-[5rem]">
+                    <div className="bg-black sticky flex flex-col gap-4 text-white w-[15rem] border-r border-dark-grey max-md:w-[4rem] max-sm:flex-row duration-300 max-sm:w-full max-sm:h-[5rem]">
                         <Link
                             to="/"
-                            className="text-3xl px-4 font-billabong mt-12 justify-center translate-x-1"
+                            className="text-3xl px-4 font-billabong mt-12 justify-center "
                         >
                             {isMedium ? (
-                                <i class="fi fi-brands-instagram"></i>
+                                <i className="fi fi-brands-instagram -translate-x-1"></i>
                             ) : (
                                 <h1 className="text-3xl ml-4">Instagram</h1>
                             )}
                         </Link>
-                        <Link
-                            to="/"
-                            className="link mt-12"
-                        >
-                            <i className="fi fi-rr-house-blank"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Home</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-search"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Search</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-tr-compass-alt"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Compass</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-tr-films"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Reels</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-heart"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Notification</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-square-plus"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Create</p>
-                        </Link>
-                        <Link
-                            className="link"
-                        >
-                            <i class="fi fi-rr-user"></i>
-                            <p className="text-2xl -translate-y-1 max-md:hidden">Profile</p>
-                        </Link>
-                        <div className="flex flex-col gap-10 mt-auto">
-                            <Link
-                                className="link"
-                            >
-                                <i class="fi fi-rr-at"></i>
-                                <p className="text-2xl -translate-y-1 max-md:hidden">Threads</p>
-                            </Link>
-                            <Link
-                                className="link"
-                            >
-                                <i class="fi fi-rr-menu-burger"></i>
-                                <p className="text-2xl -translate-y-1 max-md:hidden">More</p>
-                            </Link>
+                        <SideNavigation to="/" className="mt-12" image="fi fi-rr-house-blank" text="Home"></SideNavigation>
+                        <SideNavigation to="/Search" image="fi fi-rr-search" text="Search"></SideNavigation>
+                        <SideNavigation to="/Explore" image="fi fi-tr-compass-alt" text="Explore"></SideNavigation>
+                        <SideNavigation to="/Reels" image="fi fi-tr-films" text="Reels"></SideNavigation>
+                        <SideNavigation to="/Notification" image="fi fi-rr-heart" text="Notification"></SideNavigation>
+                        <SideNavigation to="/Create" image="fi fi-rr-square-plus" text="Create"></SideNavigation>
+                        <SideNavigation to="profile" image="fi fi-rr-user" text="Profile"></SideNavigation>
+                        <div className="flex flex-col gap-6 mt-auto">
+                            <SideNavigation to="/Threads" image="fi fi-rr-at" text="Threads"></SideNavigation>
+                            <SideNavigation to="/More" image="fi fi-rr-menu-burger" text="More"></SideNavigation>
                         </div>
                     </div>
 
                     {/* Outlet (Content Area) */}
-                    <div className="flex-1 overflow-y-auto bg-black items-center flex justify-center">
+                    <div className="flex-1 overflow-y-auto flex bg-black  justify-center">
                         <Outlet />
                     </div>
                 </div>
