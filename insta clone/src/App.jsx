@@ -22,7 +22,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Navbar />}>
                 <Route index element={<HomePage />} />
-                <Route path="profile" element={<ProfilePage />} />
+                <Route path="profile/:id" element={<ProfilePage />} />
               </Route>
               <Route path="/signin" element={<UserAuthForm type="sign-in"></UserAuthForm>}></Route>
               <Route path="/signup" element={<UserAuthForm type="sign-up"></UserAuthForm>}></Route>

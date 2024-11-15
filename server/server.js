@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 import {nanoid} from 'nanoid';
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import admin    from "firebase-admin"
+import serviceAccount from "./instagram-clone-59a5e-firebase-adminsdk-hmh6t-4869929c6e.json" assert{type: "json"}
+import {getAuth} from "firebase-admin/auth"
 
 import User from './Schema/User.js';
 
@@ -19,7 +22,11 @@ mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true,
 })
 
-const formaDatatoSend = (user) => {
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+})
+
+const formatDatatoSend = (user) => {
     const accessToken = jwt.sign({id: user._id}, process.env.SECRET_ACCESS_KEY)
     return {
         accessToken,
@@ -59,7 +66,7 @@ server.post("/signup", (req, res) => {
             personal_info: {fullname, email, password: hashed_password, username}
         })
         user.save().then((result) => {
-            return res.status(200).json(formaDatatoSend(result))
+            return res.status(200).json(formatDatatoSend(result))
         })
         .catch((err) => {
             if(err.code == 11000){
@@ -72,7 +79,6 @@ server.post("/signup", (req, res) => {
 
 server.post("/signin", (req, res) => {
     let {email, password} = req.body;
-    console.log("🚀 ~ server.post ~ email:", email)
     User.findOne({"personal_info.email": email})
     .then((user) => {
         if(!user){
@@ -87,7 +93,7 @@ server.post("/signin", (req, res) => {
                     return res.status(403).json({"error": "Incorrect Password"})
                 }
                 else{
-                    return res.status(200).json(formaDatatoSend(user))
+                    return res.status(200).json(formatDatatoSend(user))
                 }
             })
         }
@@ -101,6 +107,63 @@ server.post("/signin", (req, res) => {
     })
 
 })
+
+server.post("/google-auth", async (req, res) =>{
+    let {access_token} = req.body;
+    getAuth().verifyIdToken(access_token)
+    .then(async (decodedUser) => {
+
+        let {email, name, picture} = decodedUser;
+        picture = picture.replace("s96-c", "s384-c")
+
+        let user = await User.findOne({"personal_info.email": email}).select("personal_info.fullname personal_info.username personal_info.profile_img google_auth").then((u) => {
+            return u || null;
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(500).json({"error": err.message})
+        })
+        if(user){
+            if(!user.google_auth){
+                return res.status(403).json({"error": "This email was signed up without google. Please log in with password to access the account" })
+            }
+        }
+        else{
+            let username = await generateUsername(email);
+
+            user = new User({
+                personal_info: {fullname: name, email, profile_img: picture, username},
+                google_auth: true
+            });
+
+            await user.save().then((u) => {
+                user = u;
+            })
+            .catch((err) => {
+                return res.status(500).json({"error": err.message})
+            })
+        }
+
+        return res.status(200).json(formatDatatoSend(user));
+    })
+    .catch(err => {
+        return res.status(500).json({"error": "Error occured while login please try again"});
+    })
+})
+
+server.post("/get-profile", (req, res) => {
+    let {username} = req.body;
+    User.findOne({"personal_info.username": username})
+    .select("-personal_info.password -google_auth -updatedAt -blogs -joinedAt -_id")
+    .then((user) => {
+        return res.status(200).json(user)
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": err.message})
+    })
+})
+
 
 let port = 3000;
 server.listen(port, () => {
