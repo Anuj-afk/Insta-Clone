@@ -34,7 +34,6 @@ function ProfilePage() {
     const fetchUserProfile = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {username: profileId})
         .then(({data: user}) => {
-            console.log(user)
             setProfile(user);
             setProfileLoaded(true)
         })
@@ -115,6 +114,7 @@ function ProfilePage() {
                                 borderRadius: 100,
                                 border: "2px solid black",
                             }}
+                            referrerPolicy="no-referrer"
                         />
                     </div>
                 </div>
@@ -131,8 +131,11 @@ function ProfilePage() {
                         }}
                     >
                         <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
+
                         <button
+                            className={(profile_username == username ? "" : " hidden") }
                             style={{
+                                whiteSpace: "nowrap",
                                 backgroundColor: "#424242",
                                 marginLeft: "15px",
                                 paddingLeft: "15px",
@@ -248,16 +251,10 @@ function ProfilePage() {
                         <h1 style={{ marginLeft: "7px" }}>REELS</h1>
                     </button>
                     <button
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            borderTop: selectSaved ? "2px solid white" : "none",
-                            height: "50px",
-                            alignItems: "center",
-                        }}
+                        className={(profile_username == username ? "" : " hidden") + " flex flex-row " + (selectSaved ? " border-t-2 border-white ": "") +" h-[50px] items-center"}
                         onClick={handleSavedSelect}
                     >
-                        <i className={"fi fi-rr-bookmark " + (profile_username == username ? "" : " hidden")}></i>
+                        <i className={"fi fi-rr-bookmark "}></i>
                         <h1 style={{ marginLeft: "7px" }}>SAVED</h1>
                     </button>
                 </div>

@@ -76,6 +76,12 @@ const userSchema = mongoose.Schema({
             default: 0
         },
     },
+    posts: {
+        type: [Schema.Types.ObjectId],
+        ref: "posts",
+        default: []
+    },
+    
     google_auth: {
         type: Boolean,
         default: false

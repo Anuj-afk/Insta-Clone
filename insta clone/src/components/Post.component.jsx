@@ -5,6 +5,7 @@ function Post() {
     const [saveIcon, setSaveIcon] = useState("fi fi-rr-bookmark");
     // const [isVerified, setIsVerified] = useState(false);
     const [likeCounter, setLikeCounter] = useState(0);
+    
 
     const icon = {
         fontSize: 25,

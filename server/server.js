@@ -8,8 +8,10 @@ import cors from "cors";
 import admin    from "firebase-admin"
 import serviceAccount from "./instagram-clone-59a5e-firebase-adminsdk-hmh6t-4869929c6e.json" assert{type: "json"}
 import {getAuth} from "firebase-admin/auth"
+import aws from "aws-sdk";
 
 import User from './Schema/User.js';
+import Post from './Schema/Post.js';
 
 const server = express();
 server.use(express.json());
@@ -25,6 +27,48 @@ mongoose.connect(process.env.DB_LOCATION, {
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 })
+
+const s3 = new aws.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: "ap-south-1"
+})
+
+const generateUploadUrl = async () => {
+    const date = new Date();
+    const imageName = `${nanoid()}-${date.getTime}.jpeg`
+    return await s3.getSignedUrlPromise("putObject", {
+        Bucket: "instagram-clone-project-bucket",
+        Key: imageName,
+        Expires: 60 * 60, // 1 hour
+        ContentType: "image/jpeg",
+    })
+}
+
+const verifyJwt = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if(!token) {
+        return res.status(401).json({"error": "No token provided"})
+    }
+    jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user) => {
+        if(err) {
+            return res.status(403).json({"error": "Invalid token"})
+        }
+        req.user = user.id;
+        next();
+    })
+}
+
+
+server.get("/get-upload-url", (req, res) => {
+    generateUploadUrl().then((url) => {
+        return res.status(200).json({uploadUrl: url})
+    }).catch((err) => {
+        console.log(err.message);
+        return res.status(500).json({"error": "Failed to generate upload URL"})
+    })
+})
+
 
 const formatDatatoSend = (user) => {
     const accessToken = jwt.sign({id: user._id}, process.env.SECRET_ACCESS_KEY)
@@ -162,6 +206,40 @@ server.post("/get-profile", (req, res) => {
         console.log(err.message);
         return res.status(500).json({"error": err.message})
     })
+})
+
+server.post("/post", verifyJwt, (req, res) => {
+    let userId = req.user;
+
+    let {des, likes_hide, comment_hide, link} = req.body;
+    if(!des.length){
+        return res.status(403).json({"error": "Description is required"})
+    }
+    if(!link.length){
+        return res.status(403).json({"error": "Link is required"})
+    }
+    let post_id = Math.floor(Math.random() * 1000000000000);
+    let posts = new Post({
+        des, likes_hide, comment_hide, link, post_id
+    })
+
+    posts.save().then((post) => {
+        let incrementVal = 1;
+        User.findByIdAndUpdate(userId, {$inc: {"account_info.total_posts": incrementVal}, $push: {"posts": post._id}})
+        .then(user => {
+            return res.status(200).json({id: posts.post_id})
+        })
+        .catch(err => {
+            console.log(err.message);
+            return res.status(500).json({"error": "failed to upload total posts number"})
+        })
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while creating post"})
+    })
+    
+
 })
 
 
