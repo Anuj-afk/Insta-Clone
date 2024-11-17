@@ -1,51 +1,56 @@
 // App.js
 import React, { createContext, useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/sidebar.Component";
 import HomePage from "./pages/homePage";
 import UserAuthForm from "./pages/userAuthForm.page";
 import ProfilePage from "./pages/ProfilePage";
 import { lookInSession } from "./common/session";
-import ProtectedRoutes from "./components/ProtectedRoute.component";
 
+export const UserContext = createContext({});
 
-export const UserContext = createContext({})
 const App = () => {
-    const [userAuth, setUserAuth] = useState({});
+  const [userAuth, setUserAuth] = useState({ accessToken: null });
 
-    useEffect(() => {
-        let userInSession = lookInSession("user");
-        userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({accessToken: null});
-    }, [])
+  useEffect(() => {
+    const userInSession = lookInSession("user");
+    setUserAuth(userInSession ? JSON.parse(userInSession) : { accessToken: null });
+  }, []);
 
-    // return accessToken ? children : <Navigate to="/Insta-Clone/signin" />;
-    return (
-      <UserContext.Provider value={{ userAuth, setUserAuth }}>
-        <Routes>
-          <Route path="/Insta-Clone" element={<Navbar />}>
-              {/* <Route index element={<ProtectedRoutes> <HomePage /> </ProtectedRoutes>}/>
-              <Route path="profile/:id" element={<ProtectedRoutes> <ProfilePage /></ProtectedRoutes>}/> */}
-              {
-                accessToken ?
-                <Route index element={<HomePage />}/>
-                :
-                <Navigate to="/Insta-Clone/signin" />
-              }
-              {
-                accessToken ?
-                <Route path="profile/:id" element={<ProfilePage />}/>
-                :
-                <Navigate to="/Insta-Clone/signin" />
-              }
-              {/* <Route index element={<HomePage />}/> */}
-              {/* <Route path="profile/:id" element={<ProfilePage />}/> */}
-          </Route>
-          <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
-          <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
-        </Routes>
-      </UserContext.Provider>
-    );
-  };
-  
+  return (
+    <UserContext.Provider value={{ userAuth, setUserAuth }}>
+      <Routes>
+        <Route path="/Insta-Clone" element={<Navbar />}>
+          {/* Home Page Route */}
+          <Route
+            index
+            element={
+              userAuth.accessToken ? (
+                <HomePage />
+              ) : (
+                <Navigate to="/Insta-Clone/signin" replace />
+              )
+            }
+          />
+          {/* Profile Page Route */}
+          <Route
+            path="profile/:id"
+            element={
+              userAuth.accessToken ? (
+                <ProfilePage />
+              ) : (
+                <Navigate to="/Insta-Clone/signin" replace />
+              )
+            }
+          />
+        </Route>
+
+        {/* Authentication Routes */}
+        <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
+        <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
+      </Routes>
+    </UserContext.Provider>
+  );
+};
 
 export default App;
