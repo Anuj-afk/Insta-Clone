@@ -1,4 +1,3 @@
-// App.js
 import React, { createContext, useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/sidebar.Component";
@@ -20,21 +19,15 @@ const App = () => {
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
+        {/* Redirect from the root to /Insta-Clone */}
+        <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} />
+        
+        {/* Main routes inside /Insta-Clone */}
         <Route path="/Insta-Clone" element={<Navbar />}>
           {/* Home Page Route */}
-          <Route
-            index
-            element={
-                <HomePage />
-            }
-          />
+          <Route index element={<HomePage />} />
           {/* Profile Page Route */}
-          <Route
-            path="profile/:id"
-            element={
-                <ProfilePage />
-            }
-          />
+          <Route path="profile/:id" element={<ProfilePage />} />
         </Route>
 
         {/* Authentication Routes */}
