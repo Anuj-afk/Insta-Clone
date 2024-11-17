@@ -6,7 +6,12 @@ import {nanoid} from 'nanoid';
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import admin    from "firebase-admin"
-import serviceAccount from "./instagram-clone-59a5e-firebase-adminsdk-hmh6t-4869929c6e.json" assert{type: "json"}
+import { readFileSync } from 'fs';
+
+const serviceAccount = JSON.parse(
+    readFileSync('./instagram-clone-59a5e-firebase-adminsdk-hmh6t-4869929c6e.json', 'utf-8')
+);
+
 import {getAuth} from "firebase-admin/auth"
 import aws from "aws-sdk";
 
