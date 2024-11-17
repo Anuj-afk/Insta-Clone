@@ -5,7 +5,7 @@ const App = () => {
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Router>
         <Routes>
-          <Route path="/" element={<Navbar />}>
+          <Route path="/Insta-Clone" element={<Navbar />}>
             <Route
               index
               element={
@@ -23,8 +23,8 @@ const App = () => {
               }
             />
           </Route>
-          <Route path="/signin" element={<UserAuthForm type="sign-in" />} />
-          <Route path="/signup" element={<UserAuthForm type="sign-up" />} />
+          <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
+          <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
         </Routes>
       </Router>
     </UserContext.Provider>
