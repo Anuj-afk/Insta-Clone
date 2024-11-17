@@ -25,12 +25,9 @@ dist-ssr
 
 # Environments
 .djenv
-.env
 .venv
 djenv/
-env/
 venv/
 ENV/
 djenv.bak/
-env.bak/
 venv.bak/

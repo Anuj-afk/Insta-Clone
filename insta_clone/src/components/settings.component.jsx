@@ -12,7 +12,7 @@ const SettingsPanel = () => {
     const signOutUser = () => {
         removeFromSession("user");
         setUserAuth({access_token: null});
-        navigate("/signin")
+        navigate("/Insta-clone/signin")
     }
 
     return (
