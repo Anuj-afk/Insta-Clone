@@ -19,6 +19,8 @@ const postStructure = {
 
 const Navbar = () => {
     
+    const [isCheckedLike, setIsCheckedLike] = useState(false)
+    const [isCheckedComm, setIsCheckedComm] = useState(false)
     const [isMedium, setIsMedium] = useState(window.innerWidth <= 768);
     const [isSmall, setIsSmall] = useState(window.innerWidth <= 640);
     const [createPopUp,setCreatePopUp] = useState(false)
@@ -62,6 +64,7 @@ const Navbar = () => {
         setCreatePopUp(false);
         setPreviewUrl(null);
         setNewBanner(null);
+
     };
 
     const handleDiscriptionChange = (event) => {
@@ -100,6 +103,8 @@ const Navbar = () => {
         setNewBanner(null)
         setPost(postStructure)
         setPreviewUrl(null)
+        setIsCheckedComm(false);
+        setIsCheckedLike(false);
     }
 
     const PublishPost = (url) => {
@@ -114,6 +119,16 @@ const Navbar = () => {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
+    }
+
+    const handleHideLikes = (e) => {
+        setIsCheckedLike((prev) => !prev);
+        setPost({...post, likes_hide:!likes_hide});
+    }
+
+    const handleTurnOffCommenting = (e) => {
+        setIsCheckedComm((prev) => !prev);
+        setPost({...post, comment_hide:!comment_hide});
     }
 
     return (
@@ -181,7 +196,7 @@ const Navbar = () => {
             ) : (
                 <div className="flex min-h-screen flex-row">
                     {/* Navbar */}
-                    <div className="bg-black sticky flex flex-col gap-4 text-white w-[15rem] border-r border-dark-grey max-md:w-[4rem] max-sm:flex-row duration-300 max-sm:w-full max-sm:h-[5rem]">
+                    <div className="bg-black min-h-full fixed flex flex-col gap-4 text-white w-[15rem] border-r border-dark-grey max-md:w-[4rem] max-sm:flex-row duration-300 max-sm:w-full max-sm:h-[5rem]">
                         <Link
                             to="/"
                             className="text-3xl px-4 font-billabong mt-12 justify-center "
@@ -453,6 +468,8 @@ const Navbar = () => {
                                         role="switch"
                                         id="flexSwitchCheckDefault"
                                         style={{ marginBottom: "20px" }}
+                                        checked={isCheckedLike}
+                                        onClick={handleHideLikes}
                                     />
                                 </div>
                                 <div
@@ -474,6 +491,8 @@ const Navbar = () => {
                                         role="switch"
                                         id="flexSwitchCheckDefault"
                                         style={{ marginBottom: "20px" }}
+                                        checked={isCheckedComm}
+                                        onClick={handleTurnOffCommenting}
                                     />
                                 </div>
                             </div>

@@ -220,7 +220,7 @@ server.post("/post", verifyJwt, (req, res) => {
     }
     let post_id = Math.floor(Math.random() * 1000000000000);
     let posts = new Post({
-        des, likes_hide, comment_hide, link, post_id
+        des, likes_hide, comment_hide, link, post_id, author: userId
     })
 
     posts.save().then((post) => {
@@ -242,6 +242,49 @@ server.post("/post", verifyJwt, (req, res) => {
 
 })
 
+
+server.post("/latest-posts", (req, res) => {
+    let {page} = req.body;
+    let maxLimit = 5;
+    Post.find().populate("author", "personal_info.fullname personal_info.profile_img personal_info.username -_id")
+    .sort({"publishedAt": -1})
+    .skip((page-1)*maxLimit)
+    .select("post_id des activity.total_likes activity_total_comments activity.total_views link comments likes_hide comment_hide")
+    .limit(maxLimit)
+    .then(post => {
+        return res.status(200).json({post})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while fetching latest posts"})
+    })
+})
+
+server.post("/all-latest-posts-count", (req, res) => {
+    Post.countDocuments()
+    .then(count => {
+        return res.status(200).json({totalDocs: count})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while fetching total posts"})
+    })
+})
+
+server.post("/like", (req, res) => {
+    let {post_id, val} = req.body;
+    console.log(post_id)
+    Post.findByIdAndUpdate(post_id, {$inc: {"activity.total_likes": val}})
+    // Post.findOne({post_id})
+    .then(post => {
+        console.log(post)
+        return res.status(200).json({likes: post.activity.total_likes})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while liking post"})
+    })
+})
 
 let port = 3000;
 server.listen(port, () => {

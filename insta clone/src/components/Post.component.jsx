@@ -1,26 +1,67 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import CommentPopup from "./CommentPopup.component";
+import { latestPostContext } from "../pages/homePage";
+import axios from "axios";
 
-function Post() {
+function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, comment_hide, post_id, id}) {
     const [likeIcon, setLikeIcon] = useState("fi fi-rs-heart");
     const [saveIcon, setSaveIcon] = useState("fi fi-rr-bookmark");
     // const [isVerified, setIsVerified] = useState(false);
     const [likeCounter, setLikeCounter] = useState(0);
-    
+    const [openComments, setOpenComments] = useState(false)
+
+    let  {latestPost, setLatestPost, } = useContext(latestPostContext)
+    // latestPost:  {results: {activity: {total_likes, total_views}, author: {personal_info: {fullname, profile_img, username}}, des, link, post_id, likes_hide, comment_hide}}
 
     const icon = {
         fontSize: 25,
         color: "white",
     };
 
-    const handleLike = () => {
-        if (likeIcon === "fi fi-rs-heart") {
-            setLikeIcon("fi fi-sr-heart");
-            setLikeCounter((prevLikes) => prevLikes + 1);
-        } else {
-            setLikeIcon("fi fi-rs-heart");
-            setLikeCounter((prevLikes) => prevLikes - 1);
-        }
+    const handleLike = (postIndex) => {
+        // Toggle the like icon
+        const newLikeIcon = likeIcon === "fi fi-rs-heart" ? "fi fi-sr-heart" : "fi fi-rs-heart";
+        setLikeIcon(newLikeIcon);
+    
+        // Update the latestPost state immutably
+        setLatestPost(prevPost => {
+            const updatedResults = [...prevPost.results]; // Make a copy of the results array
+            const post = updatedResults[postIndex]; // Get the post to update
+            
+            if(newLikeIcon === "fi fi-sr-heart"){
+
+                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/like", {post_id: post_id, val: 1})
+                .then(
+                    post.activity.total_likes = post.activity.total_likes + 1
+                )
+                .catch(err => {
+                    console.log(err);
+                })
+            }
+            else{
+                post.activity.total_likes = post.activity.total_likes -1
+            }
+            // Increment or decrement the likes based on the new like icon
+            // post.activity.total_likes = newLikeIcon === "fi fi-sr-heart" 
+            //     ? 
+            //     post.activity.total_likes + 1 
+            //     : 
+            //     post.activity.total_likes - 1;
+    
+            return {
+                ...prevPost, // Keep other properties of latestPost intact
+                results: updatedResults
+            };
+        });
+    
+        
+        // Update the like counter
+        // setLikeCounter(prevLikes => prevLikes + (newLikeIcon === "fi fi-sr-heart" ? 1 : -1));
     };
+
+    const toggleCommentPopup = () => {
+        setOpenComments(!openComments)
+    }
 
     const handleSave = () => {
         if (saveIcon === "fi fi-rr-bookmark") {
@@ -49,7 +90,7 @@ function Post() {
                     <div style={{ display: "flex", flexDirection: "row" }}>
                         <img
                             className="profile-pic border-light"
-                            src="https://imgs.search.brave.com/DG-lQwOpD6baSZBkzBK95jFiR5HptdTky7aTtnjEbaU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9kZWVw/YWkub3JnL3N0YXRp/Yy9pbWFnZXMvZG9s/cGhpbjMuc3Zn"
+                            src={profile_img}
                             style={{
                                 height: "38px",
                                 width: "38px",
@@ -69,7 +110,7 @@ function Post() {
                                 color: "white",
                             }}
                         >
-                            UserName ☑
+                            {username}
                         </h1>
                     </div>
                     <button>
@@ -80,10 +121,10 @@ function Post() {
                 </div>
 
                 <img
-                    src="https://imgs.search.brave.com/iLMEW1KwR5cPiFFRxdRWsCGH107qJN0fScgf0YfvoxY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudW5zcGxhc2gu/Y29tL3Bob3RvLTE0/OTI1MzQ1MTMwMDYt/Mzc3MTVmMzM2YTM5/P2ZtPWpwZyZxPTYw/Jnc9MzAwMCZpeGxp/Yj1yYi00LjAuMw"
+                    src={link}
                     className="card-img-top"
                     alt="..."
-                    style={{ width: "490px" }}
+                    style={{ width: "490px" ,border:'1px solid gray'}}
                 />
                 <div className="card-footer bg-transparent border-light">
                     <div
@@ -101,7 +142,7 @@ function Post() {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <button onClick={handleLike}>
+                            <button onClick={() => handleLike(id)} className={(likes_hide? " hidden ": "")}>
                                 <i className={likeIcon} style={icon}></i>
                             </button>
                             <button>
@@ -110,7 +151,7 @@ function Post() {
                                     style={icon}
                                 ></i>
                             </button>
-                            <button>
+                            <button onClick={toggleCommentPopup} className={(comment_hide? " hidden ": "")}>
                                 <i
                                     className="fi fi-rr-comments"
                                     style={icon}
@@ -124,13 +165,19 @@ function Post() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className={(likes_hide? " hidden ": "")}>
                         <p style={{ color: "white", fontWeight: "bold" }}>
-                            {likeCounter} likes
+                            {total_likes} likes
+                        </p>
+                    </div>
+                    <div style={{width:'485px',marginLeft:'5px'}}>
+                        <p style={{color:'white'}}>
+                            {des}
                         </p>
                     </div>
                 </div>
             </div>
+            <CommentPopup openComments={openComments} toggleCommentPopup={toggleCommentPopup}/>
         </div>
     );
 }

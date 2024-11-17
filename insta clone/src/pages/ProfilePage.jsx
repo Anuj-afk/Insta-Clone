@@ -5,84 +5,104 @@ import axios from "axios";
 import SettingsPanel from "../components/settings.component";
 
 export const profileDataStructure = {
-    personal_info:{
+    personal_info: {
         fullname: "",
         username: "",
         profile_img: "",
         bio: "",
     },
-    account_info:{
+    account_info: {
         total_posts: 0,
         total_followers: 0,
         total_following: 0,
-    }
-}
+    },
+};
 
 function ProfilePage() {
-    let [selectPosts, setSelectPosts] = useState(true);
-    let [selectReels, setSelectReels] = useState(false);
-    let [selectSaved, setSelectSaved] = useState(false);
-    let [settingsNavPanel, setSettingsNavPanel] = useState(false)
-    let {id: profileId} = useParams();
-    let [profile, setProfile] = useState(profileDataStructure)
+    let [selectedNavbarButton, setSelectedNavbarButton] = useState("");
+    let [settingsNavPanel, setSettingsNavPanel] = useState(false);
+    let { id: profileId } = useParams();
+    let [profile, setProfile] = useState(profileDataStructure);
     let [profileLoaded, setProfileLoaded] = useState(false);
 
-    let {personal_info: {fullname, username: profile_username, profile_img, bio}, account_info: {total_posts, total_followers, total_following}} = profile
+    let {
+        personal_info: {
+            fullname,
+            username: profile_username,
+            profile_img,
+            bio,
+        },
+        account_info: { total_posts, total_followers, total_following },
+    } = profile;
 
-    let {userAuth: {username}} = useContext(UserContext)
+    let {
+        userAuth: { username },
+    } = useContext(UserContext);
 
     const fetchUserProfile = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {username: profileId})
-        .then(({data: user}) => {
-            setProfile(user);
-            setProfileLoaded(true)
-        })
-        .catch(err => {
-            console.log(err);
-        })
-    }
+        axios
+            .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {
+                username: profileId,
+            })
+            .then(({ data: user }) => {
+                setProfile(user);
+                setProfileLoaded(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     useEffect(() => {
         fetchUserProfile();
-        if(profileLoaded){
+        if (profileLoaded) {
             resetState();
         }
-    }, [profileId])
+    }, [profileId]);
 
     const resetState = () => {
         setSelectPosts(true);
         setSelectReels(false);
         setSelectSaved(false);
         setProfile(profileDataStructure);
-    }
-
-    const handlePostsSelect = () => {
-        setSelectPosts(true);
-        setSelectReels(false);
-        setSelectSaved(false);
     };
 
-    const handleReelsSelect = () => {
-        setSelectPosts(false);
-        setSelectReels(true);
-        setSelectSaved(false);
+    const handleSelectedNavbarButton = (buttonName) => {
+        setSelectedNavbarButton(buttonName);
     };
 
-    const handleSavedSelect = () => {
-        setSelectPosts(false);
-        setSelectReels(false);
-        setSelectSaved(true);
+    const profileNavbar = {
+        display: "flex",
+        flexDirection: "row",
+        height: "50px",
+        alignItems: "center",
+        margin: "30px",
     };
 
     const handleSettingsPanel = () => {
-        setSettingsNavPanel(currentVal => !currentVal);
-    }
+        setSettingsNavPanel((currentVal) => !currentVal);
+    };
 
     const handleBlur = () => {
         setTimeout(() => {
             setSettingsNavPanel(false);
-        }, 200)
-    }
+        }, 200);
+    };
+
+    let profileNavbarButtons = [
+        {
+            buttonImage: "fi fi-rr-grid",
+            buttonName: "POSTS",
+        },
+        {
+            buttonImage: "fi fi-tr-films",
+            buttonName: "REELS",
+        },
+        {
+            buttonImage: "fi fi-rr-bookmark",
+            buttonName: "SAVED",
+        },
+    ];
 
     return (
         <div>
@@ -133,7 +153,9 @@ function ProfilePage() {
                         <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
 
                         <button
-                            className={(profile_username == username ? "" : " hidden") }
+                            className={
+                                profile_username == username ? "" : " hidden"
+                            }
                             style={{
                                 whiteSpace: "nowrap",
                                 backgroundColor: "#424242",
@@ -150,18 +172,23 @@ function ProfilePage() {
                         >
                             <h1>Edit Profile</h1>
                         </button>
-                        <div className="relative" onClick={handleSettingsPanel} onBlur={handleBlur}>
+                        <div
+                            className="relative"
+                            onClick={handleSettingsPanel}
+                            onBlur={handleBlur}
+                        >
                             <button>
                                 <i
                                     className="fi fi-sr-settings mt-1"
                                     style={{ marginLeft: "400px" }}
                                 ></i>
                             </button>
-                            {
-                                settingsNavPanel? <SettingsPanel></SettingsPanel> : ""
-                            }
+                            {settingsNavPanel ? (
+                                <SettingsPanel></SettingsPanel>
+                            ) : (
+                                ""
+                            )}
                         </div>
-
                     </div>
 
                     <div
@@ -174,8 +201,14 @@ function ProfilePage() {
                         }}
                     >
                         <h1> {total_posts} posts </h1>
-                        <h1 style={{ marginLeft: "20px" }}> {total_followers} followers</h1>
-                        <h1 style={{ marginLeft: "20px" }}> {total_following} following</h1>
+                        <h1 style={{ marginLeft: "20px" }}>
+                            {" "}
+                            {total_followers} followers
+                        </h1>
+                        <h1 style={{ marginLeft: "20px" }}>
+                            {" "}
+                            {total_following} following
+                        </h1>
                     </div>
 
                     <h1
@@ -211,11 +244,10 @@ function ProfilePage() {
                 </div>
             </div>
 
-            <div style={{display:"flex",justifyContent:'center'}}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
                 <div
                     style={{
                         height: "50px",
-                        width: "300px",
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",
@@ -224,39 +256,26 @@ function ProfilePage() {
                         fontSize: 13,
                     }}
                 >
-                    <button
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            borderTop: selectPosts ? "2px solid white" : "none",
-                            height: "50px",
-                            alignItems: "center",
-                        }}
-                        onClick={handlePostsSelect}
-                    >
-                        <i className="fi fi-rr-grid"></i>
-                        <h1 style={{ marginLeft: "7px" }}>POSTS</h1>
-                    </button>
-                    <button
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            borderTop: selectReels ? "2px solid white" : "none",
-                            height: "50px",
-                            alignItems: "center",
-                        }}
-                        onClick={handleReelsSelect}
-                    >
-                        <i className="fi fi-tr-films"></i>
-                        <h1 style={{ marginLeft: "7px" }}>REELS</h1>
-                    </button>
-                    <button
-                        className={(profile_username == username ? "" : " hidden") + " flex flex-row " + (selectSaved ? " border-t-2 border-white ": "") +" h-[50px] items-center"}
-                        onClick={handleSavedSelect}
-                    >
-                        <i className={"fi fi-rr-bookmark "}></i>
-                        <h1 style={{ marginLeft: "7px" }}>SAVED</h1>
-                    </button>
+                    {profileNavbarButtons.map((elements) => (
+                        <button
+                            key={elements.buttonName}
+                            onClick={() =>
+                                handleSelectedNavbarButton(elements.buttonName)
+                            }
+                            style={{
+                                ...profileNavbar,
+                                borderTop:
+                                    selectedNavbarButton === elements.buttonName
+                                        ? "2px solid white"
+                                        : "none",
+                            }}
+                        >
+                            <i className={`${elements.buttonImage}`}></i>
+                            <h1 style={{ marginLeft: "7px" }}>
+                                {elements.buttonName}
+                            </h1>
+                        </button>
+                    ))}
                 </div>
             </div>
         </div>

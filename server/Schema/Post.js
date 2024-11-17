@@ -43,6 +43,10 @@ const postSchema = mongoose.Schema({
         type: [Schema.Types.ObjectId],
         ref: 'comments'
     },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+    }
 }, 
 { 
     timestamps: {
