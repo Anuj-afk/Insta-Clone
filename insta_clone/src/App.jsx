@@ -25,8 +25,8 @@ const App = () => {
               <Route index element={<ProtectedRoutes> <HomePage /> </ProtectedRoutes>}/>
               <Route path="profile/:id" element={<ProtectedRoutes> <ProfilePage /></ProtectedRoutes>}/>
           </Route>
-          <Route path="Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
-          <Route path="Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
+          <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
+          <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
         </Routes>
       </UserContext.Provider>
     );
