@@ -1,6 +1,6 @@
 // App.js
 import React, { createContext, useEffect, useState } from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/sidebar.Component";
 import HomePage from "./pages/homePage";
 import UserAuthForm from "./pages/userAuthForm.page";
@@ -18,14 +18,27 @@ const App = () => {
         userInSession ? setUserAuth(JSON.parse(userInSession)) : setUserAuth({accessToken: null});
     }, [])
 
+    // return accessToken ? children : <Navigate to="/Insta-Clone/signin" />;
     return (
       <UserContext.Provider value={{ userAuth, setUserAuth }}>
         <Routes>
           <Route path="/Insta-Clone" element={<Navbar />}>
-              <Route index element={<ProtectedRoutes> <HomePage /> </ProtectedRoutes>}/>
-              <Route path="profile/:id" element={<ProtectedRoutes> <ProfilePage /></ProtectedRoutes>}/>
-              {/* <Route index element={<HomePage />}/>
-              <Route path="profile/:id" element={<ProfilePage />}/> */}
+              {/* <Route index element={<ProtectedRoutes> <HomePage /> </ProtectedRoutes>}/>
+              <Route path="profile/:id" element={<ProtectedRoutes> <ProfilePage /></ProtectedRoutes>}/> */}
+              {
+                accessToken ?
+                <Route index element={<HomePage />}/>
+                :
+                <Navigate to="/Insta-Clone/signin" />
+              }
+              {
+                accessToken ?
+                <Route path="profile/:id" element={<ProfilePage />}/>
+                :
+                <Navigate to="/Insta-Clone/signin" />
+              }
+              {/* <Route index element={<HomePage />}/> */}
+              {/* <Route path="profile/:id" element={<ProfilePage />}/> */}
           </Route>
           <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
           <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
