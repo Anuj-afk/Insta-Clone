@@ -25,22 +25,14 @@ const App = () => {
           <Route
             index
             element={
-              userAuth.accessToken ? (
                 <HomePage />
-              ) : (
-                <Navigate to="/Insta-Clone/signin" replace />
-              )
             }
           />
           {/* Profile Page Route */}
           <Route
             path="profile/:id"
             element={
-              userAuth.accessToken ? (
                 <ProfilePage />
-              ) : (
-                <Navigate to="/Insta-Clone/signin" replace />
-              )
             }
           />
         </Route>
