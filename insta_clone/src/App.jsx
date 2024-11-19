@@ -20,7 +20,7 @@ const App = () => {
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
         {/* Redirect from the root to /Insta-Clone */}
-        <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} />
+        {/* <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} /> */}
         
         {/* Main routes inside /Insta-Clone */}
         <Route path="/Insta-Clone" element={<Navbar />}>
