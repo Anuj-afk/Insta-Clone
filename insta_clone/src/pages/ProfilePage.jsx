@@ -62,9 +62,6 @@ function ProfilePage() {
     }, [profileId]);
 
     const resetState = () => {
-        setSelectPosts(true);
-        setSelectReels(false);
-        setSelectSaved(false);
         setProfile(profileDataStructure);
     };
 

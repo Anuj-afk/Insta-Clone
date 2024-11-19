@@ -16,14 +16,34 @@ const App = () => {
     setUserAuth(userInSession ? JSON.parse(userInSession) : { accessToken: null });
   }, []);
 
+  // return (
+  //   <UserContext.Provider value={{ userAuth, setUserAuth }}>
+  //     <Routes>
+  //       {/* Redirect from the root to /Insta-Clone */}
+  //       {/* <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} />   */}
+        
+  //       {/* Main routes inside /Insta-Clone */}
+  //       <Route path="/Insta-Clone" element={<Navbar />}>
+  //         {/* Home Page Route */}
+  //         <Route index element={<HomePage />} />
+  //         {/* Profile Page Route */}
+  //         <Route path="profile/:id" element={<ProfilePage />} />
+  //       </Route>
+
+  //       {/* Authentication Routes */}
+  //       <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
+  //       <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
+  //     </Routes>
+  //   </UserContext.Provider>
+  // );
   return (
     <UserContext.Provider value={{ userAuth, setUserAuth }}>
       <Routes>
         {/* Redirect from the root to /Insta-Clone */}
-        {/* <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} /> */}
+        {/* <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} />   */}
         
         {/* Main routes inside /Insta-Clone */}
-        <Route path="/Insta-Clone" element={<Navbar />}>
+        <Route path="/" element={<Navbar />}>
           {/* Home Page Route */}
           <Route index element={<HomePage />} />
           {/* Profile Page Route */}
@@ -31,8 +51,8 @@ const App = () => {
         </Route>
 
         {/* Authentication Routes */}
-        <Route path="/Insta-Clone/signin" element={<UserAuthForm type="sign-in" />} />
-        <Route path="/Insta-Clone/signup" element={<UserAuthForm type="sign-up" />} />
+        <Route path="/signin" element={<UserAuthForm type="sign-in" />} />
+        <Route path="/signup" element={<UserAuthForm type="sign-up" />} />
       </Routes>
     </UserContext.Provider>
   );

@@ -73,7 +73,7 @@ const UserAuthForm = ({type}) => {
 
     return(
         accessToken?
-        <Navigate to="/Insta-clone"></Navigate>
+        <Navigate to="/"></Navigate>
         :
         <AnimationWrapper keyValue={type}>
             <section className=" h-screen w-screen flex justify-center self-center bg-black text-white">
@@ -111,12 +111,12 @@ const UserAuthForm = ({type}) => {
                         type == "sign-in"?
                         <p className="mt-6 text-dark-grey text-xl text-center">
                             Don't have an account? 
-                            <Link to="/Insta-clone/signup" className="underline text-white text-xl ml-1">Sign up</Link>    
+                            <Link to="/signup" className="underline text-white text-xl ml-1">Sign up</Link>    
                         </p>
                         :
                         <p className="mt-6 text-dark-grey text-xl text-center">
                             Already have an account? 
-                            <Link to="/Insta-clone/signin" className="underline text-white text-xl ml-1">Sign in</Link>
+                            <Link to="/signin" className="underline text-white text-xl ml-1">Sign in</Link>
                         </p>
                     }
                 </form>
