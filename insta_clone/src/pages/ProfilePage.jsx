@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import SettingsPanel from "../components/settings.component";
 import ProtectedRoute from "../components/ProtectedRoute.component";
+import toast, { Toaster } from "react-hot-toast";
+import { uploadImage } from "../common/aws";
 
 export const profileDataStructure = {
     personal_info: {
@@ -35,9 +37,8 @@ function ProfilePage() {
         },
         account_info: { total_posts, total_followers, total_following },
     } = profile;
-
     let {
-        userAuth: { username },
+        userAuth: { username, accessToken },
     } = useContext(UserContext);
 
     const fetchUserProfile = () => {
@@ -87,6 +88,38 @@ function ProfilePage() {
         }, 200);
     };
 
+    const handleImageUpload = (e) => {
+        let img = e.target.files[0]
+        if(img){
+            let loadingToast = toast.loading("Uploading...");
+            uploadImage(img).then((url) => {
+                if(url){
+                    toast.dismiss(loadingToast);
+                    console.log("Uploading...");
+                    axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/profile_Image", { url }, {
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`
+                        }
+                    })
+                    .then((response) => {
+                        toast.success("uploaded successfully");
+                        setProfile({...profile, personal_info: {...profile.personal_info, profile_img: url}});
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        toast.dismiss(loadingToast);
+                        return toast.error("Failed to upload photo. Please try again.");
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                toast.dismiss(loadingToast);
+                return toast.error("Failed to upload photo. Please try again.");
+            })
+        }
+    }
+
     let profileNavbarButtons = [
         {
             buttonImage: "fi fi-rr-grid",
@@ -104,6 +137,7 @@ function ProfilePage() {
 
     return (
         <ProtectedRoute>
+            <Toaster></Toaster>
             <div>
                 <div
                     style={{
@@ -126,15 +160,11 @@ function ProfilePage() {
                             alignItems: "center",
                         }}
                     >
-                        <div style={{ height: "150px", width: "150px" }}>
-                            <img
-                                src={profile_img}
-                                style={{
-                                    borderRadius: 100,
-                                    border: "2px solid black",
-                                }}
-                                referrerPolicy="no-referrer"
-                            />
+                        <div style={{ height: "150px", width: "150px" }} className="aspect-video hover:opacity-80">
+                            <label htmlFor="ProfileImg">
+                                <img src={profile_img} style={{ borderRadius: 100, border: "2px solid black",  }} referrerPolicy="no-referrer" className="w-full mx-auto"/>
+                                <input type="file" id="ProfileImg" style={{ display: "none" }} accept="image/*" onChange={handleImageUpload}></input>
+                            </label>
                         </div>
                     </div>
 
@@ -153,7 +183,9 @@ function ProfilePage() {
 
                             <button
                                 className={
-                                    profile_username == username ? "" : " hidden"
+                                    profile_username == username
+                                        ? ""
+                                        : " hidden"
                                 }
                                 style={{
                                     whiteSpace: "nowrap",
@@ -259,12 +291,15 @@ function ProfilePage() {
                             <button
                                 key={elements.buttonName}
                                 onClick={() =>
-                                    handleSelectedNavbarButton(elements.buttonName)
+                                    handleSelectedNavbarButton(
+                                        elements.buttonName
+                                    )
                                 }
                                 style={{
                                     ...profileNavbar,
                                     borderTop:
-                                        selectedNavbarButton === elements.buttonName
+                                        selectedNavbarButton ===
+                                        elements.buttonName
                                             ? "2px solid white"
                                             : "none",
                                 }}

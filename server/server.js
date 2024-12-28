@@ -51,6 +51,7 @@ const generateUploadUrl = async () => {
 }
 
 const verifyJwt = (req, res, next) => {
+    console.log("verify")
     const token = req.headers.authorization?.split(" ")[1];
     if(!token) {
         return res.status(401).json({"error": "No token provided"})
@@ -278,16 +279,31 @@ server.post("/all-latest-posts-count", (req, res) => {
 
 server.post("/like", (req, res) => {
     let {post_id, val} = req.body;
-    console.log(post_id)
-    Post.findByIdAndUpdate(post_id, {$inc: {"activity.total_likes": val}})
+    Post.findOneAndUpdate( { post_id }, { $inc: { "activity.total_likes": val } } )
     // Post.findOne({post_id})
     .then(post => {
-        console.log(post)
+        console.log(post.activity)
         return res.status(200).json({likes: post.activity.total_likes})
     })
     .catch(err => {
+        console.log(res.data);
         console.log(err.message);
         return res.status(500).json({"error": "error occured while liking post"})
+    })
+})
+
+server.post("/profile_Image", verifyJwt, (req, res) => {
+    let userId = req.user;
+    console.log(userId)
+    let {url} = req.body;
+    console.log(userId);
+    User.findByIdAndUpdate(userId, {$set: {"personal_info.profile_img": url}})
+    .then(post => {
+        return res.status(200).json(post)
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while updating profile image"})
     })
 })
 
