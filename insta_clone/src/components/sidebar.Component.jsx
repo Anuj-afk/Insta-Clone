@@ -374,7 +374,7 @@ const Navbar = () => {
                                     >
                                         <source
                                             src={previewUrl}
-                                            type={newBanner.type}
+                                            type= "video/mp4"
                                         />
                                         Your browser does not support the video
                                         tag.
