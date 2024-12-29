@@ -5,7 +5,7 @@ import SideNavigation from "./sidebar.navigation.component";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { UserContext } from "../App";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { uploadImage } from "../common/aws";
 import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
@@ -75,7 +75,7 @@ const Navbar = () => {
     const handleUpload = () => {
         if(newBanner){
             let loadingToast = toast.loading("Uploading ...")
-            uploadImage(newBanner).then((url) => {
+            uploadImage(newBanner, newBanner.type).then((url) => {
                 if(url){
                     toast.dismiss(loadingToast);
                     toast.success("uploaded successfully");
@@ -133,6 +133,7 @@ const Navbar = () => {
 
     return (
         <AnimationWrapper>
+            <Toaster></Toaster>
             {isSmall ? (
                 <div className="flex h-screen flex-col bg-black">
                     <div className="border-b border-dark-grey h-16 flex flex-row ">
@@ -351,6 +352,9 @@ const Navbar = () => {
                                     overflow: "hidden",
                                 }}
                             >
+                                {console.log(newBanner)}
+                                {console.log(previewUrl)}
+                                {console.log(newBanner.type.startsWith("image/"))}
                                 {newBanner.type.startsWith("image/") ? (
                                     <img
                                         src={previewUrl}

@@ -119,13 +119,32 @@ function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, commen
                         </h1>
                     </button>
                 </div>
+                {/* {console.log(link.endsWith(".jpeg"))}
+                {console.log(link.split(".")[1])} */}
+                {link.endsWith(".jpeg") ?                
+                    <img
+                        src={link}
+                        className="card-img-top"
+                        alt="..."
+                        style={{ width: "490px" ,border:'1px solid gray'}}
+                    /> 
+                    :
+                    <video
+                        controls
+                        style={{
+                            maxWidth: "100%",
+                            maxHeight: "100%",
+                        }}
+                    >
+                        <source
+                            src={link}
+                            type= "video/mp4"
+                        />
+                        Your browser does not support the video
+                        tag.
+                    </video>
+                }
 
-                <img
-                    src={link}
-                    className="card-img-top"
-                    alt="..."
-                    style={{ width: "490px" ,border:'1px solid gray'}}
-                />
                 <div className="card-footer bg-transparent border-light">
                     <div
                         style={{

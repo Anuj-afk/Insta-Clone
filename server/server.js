@@ -39,14 +39,16 @@ const s3 = new aws.S3({
     region: "ap-south-1"
 })
 
-const generateUploadUrl = async () => {
+const generateUploadUrl = async (fileType) => {
     const date = new Date();
-    const imageName = `${nanoid()}-${date.getTime}.jpeg`
+    console.log(fileType);
+    const fileName = `${nanoid()}-${date.getTime()}.${fileType.split("/")[1]}`;
     return await s3.getSignedUrlPromise("putObject", {
         Bucket: "instagram-clone-project-bucket",
-        Key: imageName,
+        Key: fileName,
         Expires: 60 * 60, // 1 hour
-        ContentType: "image/jpeg",
+        // ContentType: "image/jpeg",
+        ContentType: fileType,
     })
 }
 
@@ -66,8 +68,11 @@ const verifyJwt = (req, res, next) => {
 }
 
 
-server.get("/get-upload-url", (req, res) => {
-    generateUploadUrl().then((url) => {
+server.post("/get-upload-url", (req, res) => {
+    console.log(req.body)
+    let {fileType} = req.body;
+    console.log(fileType);
+    generateUploadUrl(fileType).then((url) => {
         return res.status(200).json({uploadUrl: url})
     }).catch((err) => {
         console.log(err.message);

@@ -92,7 +92,7 @@ function ProfilePage() {
         let img = e.target.files[0]
         if(img){
             let loadingToast = toast.loading("Uploading...");
-            uploadImage(img).then((url) => {
+            uploadImage(img, img.type).then((url) => {
                 if(url){
                     toast.dismiss(loadingToast);
                     console.log("Uploading...");
