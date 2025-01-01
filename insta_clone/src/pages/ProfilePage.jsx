@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import SettingsPanel from "../components/settings.component";
 import ProtectedRoute from "../components/ProtectedRoute.component";
@@ -38,21 +38,18 @@ function ProfilePage() {
         account_info: { total_posts, total_followers, total_following },
     } = profile;
     let {
-        userAuth: { username, accessToken },
+        userAuth, userAuth: { username, accessToken }, setUserAuth,
     } = useContext(UserContext);
 
     const fetchUserProfile = () => {
-        axios
-            .post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", {
-                username: profileId,
-            })
-            .then(({ data: user }) => {
-                setProfile(user);
-                setProfileLoaded(true);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", { username: profileId,})
+        .then(({ data: user }) => {
+            setProfile(user);
+            setProfileLoaded(true);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
     useEffect(() => {
@@ -104,6 +101,7 @@ function ProfilePage() {
                     .then((response) => {
                         toast.success("uploaded successfully");
                         setProfile({...profile, personal_info: {...profile.personal_info, profile_img: url}});
+                        setUserAuth({...userAuth, profile_img: url});
                     })
                     .catch(err => {
                         console.log(err);
@@ -157,7 +155,6 @@ function ProfilePage() {
                             width: "283px",
                             display: "flex",
                             justifyContent: "center",
-                            alignItems: "center",
                         }}
                     >
                         <div style={{ height: "150px", width: "150px" }} className={"aspect-video " + (profile_username == username ? " hover:opacity-80" : "" ) }>
@@ -187,8 +184,8 @@ function ProfilePage() {
                             }}
                         >
                             <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
-
-                            <button
+                            
+                            <Link to={"/accounts/edit"}
                                 className={
                                     profile_username == username
                                         ? ""
@@ -209,7 +206,7 @@ function ProfilePage() {
                                 }}
                             >
                                 <h1>Edit Profile</h1>
-                            </button>
+                            </Link>
                             <div
                                 className="relative"
                                 onClick={handleSettingsPanel}

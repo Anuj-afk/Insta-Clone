@@ -206,6 +206,20 @@ server.post("/google-auth", async (req, res) =>{
     })
 })
 
+server.post("/reload", async (req, res) => {
+    let {username} = req.body;
+    let user = await User.findOne({"personal_info.username": username})
+    .select("personal_info")
+    .then((u) => {return u || null})
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": err.message})
+    })
+    if(user){
+        return res.status(200).json(formatDatatoSend(user))
+    }
+})
+
 server.post("/get-profile", (req, res) => {
     let {username} = req.body;
     User.findOne({"personal_info.username": username})

@@ -3,6 +3,7 @@ export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         colors: {
+            "dark-blue": "#007fff",
             "hover": "#242424",
             white: "#FFFFFF",
             black: "#000000",
@@ -12,6 +13,7 @@ export default {
             transparent: "transparent",
             twitter: "#1DA1F2",
             purple: "#8B46FF",
+            "light-grey": "#262626"
         },
 
         fontSize: {

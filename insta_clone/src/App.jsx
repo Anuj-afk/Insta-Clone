@@ -4,24 +4,44 @@ import Navbar from "./components/sidebar.Component";
 import HomePage from "./pages/homePage";
 import UserAuthForm from "./pages/userAuthForm.page";
 import ProfilePage from "./pages/ProfilePage";
-import { lookInSession } from "./common/session";
+import { lookInSession, storeInSession } from "./common/session";
 import SettingsSidebar from "./components/settingsSidebar.component";
 import EditPage from "./pages/editPage";
+import axios from "axios";
 
 export const UserContext = createContext({});
 
 const App = () => {
-    const [userAuth, setUserAuth] = useState({ accessToken: null });
+    const [userAuth, setUserAuth] = useState({accessToken: null}); // Represents user authentication state
+    const [loading, setLoading] = useState(true); // Indicates if user session is being verified
 
     useEffect(() => {
         const userInSession = lookInSession("user");
-        setUserAuth(
-            userInSession ? JSON.parse(userInSession) : { accessToken: null }
-        );
+        if (userInSession) {
+            const parsedUser = JSON.parse(userInSession);
+            axios
+                .post(`${import.meta.env.VITE_SERVER_DOMAIN}/reload`, { username: parsedUser.username })
+                .then(({ data }) => {
+                    storeInSession("user", JSON.stringify(data));
+                    setUserAuth(data);
+                })
+                .catch((err) => {
+                    console.error("Error reloading user data:", err);
+                    setUserAuth(null);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            setUserAuth({accessToken: null});
+            setLoading(false);
+        }
     }, []);
 
+    if (loading) {
+        return <div>Loading...</div>; // Show a loader or placeholder while verifying user
+    }
+
     return (
-        <UserContext.Provider value={{ userAuth, setUserAuth }}>
+        <UserContext.Provider value={{ userAuth, setUserAuth, loading }}>
             <Routes>
                 <Route path="/" element={<Navbar />}>
                     <Route index element={<HomePage />} />

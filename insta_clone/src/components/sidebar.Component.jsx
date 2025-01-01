@@ -16,7 +16,6 @@ import { UserContext } from "../App";
 export const Postrefrence = createContext({});
 
 const Navbar = () => {
-    // const [isSelected, setIsSelected] = useState("Home");
     const [isMedium, setIsMedium] = useState(window.innerWidth <= 768);
     const [isSmall, setIsSmall] = useState(window.innerWidth <= 640);
     const [createPopUp, setCreatePopUp] = useState(false);
@@ -71,33 +70,39 @@ const Navbar = () => {
                         </div>
                         <div className="bg-black sticky flex text-white border-t border-dark-grey min-w-fit max-sm:flex-row duration-300  h-16 justify-around">
                             <SideNavigation
+                                className="my-auto"
                                 to="/"
                                 image="fi fi-rr-house-blank"
                                 text="Home"
                             ></SideNavigation>
                             <SideNavigation
+                                className="my-auto"
                                 to="/Search"
                                 image="fi fi-rr-search"
                                 text="Search"
                             ></SideNavigation>
                             <SideNavigation
+                                className="my-auto"
                                 to="/Explore"
                                 image="fi fi-tr-compass-alt"
                                 text="Explore"
                             ></SideNavigation>
                             <SideNavigation
+                                className="my-auto"
                                 to="/Reels"
                                 image="fi fi-tr-films"
                                 text="Reels"
                             ></SideNavigation>
                             <SideNavigation
+                                className="my-auto"
                                 image="fi fi-rr-square-plus"
                                 text="Create"
                                 onClick={handleCreate}
                             ></SideNavigation>
                             <SideNavigation
-                                to="profile"
-                                image="fi fi-rr-user"
+                                className="my-auto"
+                                to={`profile/${username}`}
+                                src={profile_img}
                                 text="Profile"
                             ></SideNavigation>
                         </div>
@@ -105,13 +110,13 @@ const Navbar = () => {
                 ) : (
                     <div className="flex min-h-screen flex-row bg-black">
                         {/* Navbar */}
-                        <div className=" min-h-full fixed flex flex-col gap-4 text-white w-[15rem] border-r border-dark-grey max-md:w-[4rem] max-sm:flex-row duration-300 max-sm:w-full max-sm:h-[5rem]">
+                        <div className=" min-h-full fixed flex flex-col gap-4 text-white w-[15rem] border-r border-dark-grey max-md:w-[4rem] duration-300 max-sm:w-full max-sm:h-[5rem]">
                             <Link
                                 to="/"
                                 className="text-3xl px-4 font-billabong mt-12 justify-center "
                             >
                                 {isMedium ? (
-                                    <i className="fi fi-brands-instagram -translate-x-1"></i>
+                                    <i className="fi fi-brands-instagram"></i>
                                 ) : (
                                     <h1 className="text-3xl ml-4">Instagram</h1>
                                 )}
@@ -151,7 +156,6 @@ const Navbar = () => {
                                 to={`profile/${username}`}
                                 src={profile_img}
                                 text="Profile"
-                                image={"rounded-full w-32 h-32 z-10"}
                             ></SideNavigation>
                             <div className="flex flex-col gap-6 mt-auto">
                                 <SideNavigation
@@ -168,9 +172,7 @@ const Navbar = () => {
                             </div>
                         </div>
 
-                        {/* Outlet (Content Area) */}
-                        <div className="min-w-[calc(100vw-15rem)] ml-auto">
-                            {/* <div className="flex-1 overflow-y-auto flex bg-black  justify-center"> */}
+                        <div className="min-w-[calc(100vw-15rem)] ml-[15rem] max-md:min-w-[calc(100vw-4rem)] max-md:ml-[4rem] flex flex-row overflow-auto justify-center">
                             <Outlet />
                         </div>
                     </div>

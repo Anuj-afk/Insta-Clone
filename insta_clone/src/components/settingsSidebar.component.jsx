@@ -5,12 +5,12 @@ import SideNavigation from "./sidebar.navigation.component";
 const SettingsSidebar = () => {
     return (
         <>
-            <div className="h-full text-white flex flex-col gap-4 w-[20rem] border-r border-dark-grey duration-300 overflow-y-auto max-h-screen scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+            <div className="h-full text-white flex flex-col gap-4 min-w-[20rem] duration-300 overflow-y-auto max-h-screen scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 
 
                 <h1 className="text-2xl font-bold px-4 mt-12 justify-center ml-4">Settings</h1>
                 <p className="mx-4 px-4 mt-12 text-dark-grey text-sm">How to use Instagram</p>
-                <SideNavigation image="fi fi-rr-user" text="Edit profile"></SideNavigation>
+                <SideNavigation to="edit" image="fi fi-rr-user" text="Edit profile"></SideNavigation>
                 <SideNavigation image="fi fi-rr-bell" text="Notifications"></SideNavigation>
                 <p className="mx-4 px-4 text-dark-grey text-sm">Who can see your content</p>
                 <SideNavigation image="fi fi-rr-user-lock" text="Account privacy"></SideNavigation>
