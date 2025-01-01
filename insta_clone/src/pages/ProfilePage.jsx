@@ -160,10 +160,17 @@ function ProfilePage() {
                             alignItems: "center",
                         }}
                     >
-                        <div style={{ height: "150px", width: "150px" }} className="aspect-video hover:opacity-80">
+                        <div style={{ height: "150px", width: "150px" }} className={"aspect-video " + (profile_username == username ? " hover:opacity-80" : "" ) }>
                             <label htmlFor="ProfileImg">
                                 <img src={profile_img} style={{ borderRadius: 100, border: "2px solid black",  }} referrerPolicy="no-referrer" className="w-full mx-auto"/>
-                                <input type="file" id="ProfileImg" style={{ display: "none" }} accept="image/*" onChange={handleImageUpload}></input>
+                                {
+                                    profile_username == username ? 
+                                    <input className={ profile_username == username ? "" : " hidden" } type="file" id="ProfileImg" style={{ display: "none" }} accept="image/*" onChange={handleImageUpload}></input>
+                                    : 
+                                    <>
+                                    </>
+                                }
+
                             </label>
                         </div>
                     </div>

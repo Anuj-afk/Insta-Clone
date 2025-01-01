@@ -12,8 +12,8 @@ const SideNavigation = ({to = "/", className, image, text, children, onClick, sr
                 onClick={onClick}
 
                 >
-                    <i className={image}></i>
-                    <p className="text-2xl -translate-y-1 max-md:hidden">{text}</p>
+                    <i className={ " text-white translate-y-[1px] text-[20px] "+ (image)}></i>
+                    <p className="text-xl -translate-y-[1px] max-md:hidden ml-2">{text}</p>
                 </button>
                 :
             <Link
@@ -23,11 +23,11 @@ const SideNavigation = ({to = "/", className, image, text, children, onClick, sr
             >
                 {
                     src?
-                    <img className="w-8 h-8 rounded-full -translate-y-1 -translate-x-1" src={src} alt={text} referrerPolicy="no-referrer" />
+                    <img className="w-6 h-6 rounded-full translate-y-[1px]" src={src} alt={text} referrerPolicy="no-referrer" />
                     :
-                    <i className={image}></i>
+                    <i className={" text-white translate-y-[1px] text-[20px] "+ (image)}></i>
                 }
-                <p className="text-2xl -translate-y-1 max-md:hidden">{text}</p>
+                <p className="text-xl -translate-y-[1px] max-md:hidden ml-2">{text}</p>
             </Link>
             }
             {

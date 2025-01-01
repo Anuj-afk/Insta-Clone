@@ -13,7 +13,7 @@
 }
 @layer components {
     .link {
-        @apply mx-4 rounded-md text-white hover:bg-hover opacity-75 no-underline flex items-center px-4 text-[25px] gap-2 max-md:justify-center max-md:-translate-x-1 max-sm:px-0 h-10;
+        @apply mx-4 rounded-md text-white hover:bg-hover no-underline flex items-center px-4 text-[25px] gap-2 max-md:justify-center max-md:-translate-x-1 max-sm:px-0 h-10;
     }
     .btn-dark{
         @apply whitespace-nowrap bg-black text-white rounded-full py-3 px-6 text-xl capitalize hover:bg-opacity-80;

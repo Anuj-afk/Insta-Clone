@@ -5,6 +5,8 @@ import HomePage from "./pages/homePage";
 import UserAuthForm from "./pages/userAuthForm.page";
 import ProfilePage from "./pages/ProfilePage";
 import { lookInSession } from "./common/session";
+import SettingsSidebar from "./components/settingsSidebar.component";
+import EditPage from "./pages/editPage";
 
 export const UserContext = createContext({});
 
@@ -21,26 +23,15 @@ const App = () => {
     return (
         <UserContext.Provider value={{ userAuth, setUserAuth }}>
             <Routes>
-                {/* Redirect from the root to /Insta-Clone */}
-                {/* <Route path="/" element={<Navigate to="/Insta-Clone/signin" />} />   */}
-
-                {/* Main routes inside /Insta-Clone */}
                 <Route path="/" element={<Navbar />}>
-                    {/* Home Page Route */}
                     <Route index element={<HomePage />} />
-                    {/* Profile Page Route */}
                     <Route path="profile/:id" element={<ProfilePage />} />
+                    <Route path = "accounts" element={<SettingsSidebar></SettingsSidebar>}>
+                        <Route path = "edit" element={<EditPage></EditPage>}></Route>
+                    </Route>
                 </Route>
-
-                {/* Authentication Routes */}
-                <Route
-                    path="/signin"
-                    element={<UserAuthForm type="sign-in" />}
-                />
-                <Route
-                    path="/signup"
-                    element={<UserAuthForm type="sign-up" />}
-                />
+                <Route path="/signin" element={<UserAuthForm type="sign-in" />} />
+                <Route path="/signup" element={<UserAuthForm type="sign-up" />} />
             </Routes>
         </UserContext.Provider>
     );

@@ -21,7 +21,8 @@
     "react-hot-toast": "^2.4.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.28.0",
-    "reactjs-popup": "^2.0.6"
+    "reactjs-popup": "^2.0.6",
+    "tailwind-scrollbar": "^3.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
