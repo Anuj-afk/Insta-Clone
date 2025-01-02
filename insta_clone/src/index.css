@@ -24,7 +24,7 @@
     }
 
     .input-box {
-        @apply w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent placeholder:text-black;
+        @apply w-[100%] rounded-xl p-4 bg-grey pl-12 border border-grey focus:bg-transparent placeholder:text-black;
     }
 
     input:disabled, input:disabled ~ .input-icon{
@@ -35,5 +35,8 @@
         @apply absolute left-4 top-1/2 -translate-y-1/2;
     }
 
+    .option{
+        @apply max-w-[50%] h-12 bg-hover hover:bg-dark-grey rounded-2xl
+    }
 }
 
