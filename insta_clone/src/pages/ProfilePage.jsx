@@ -6,6 +6,11 @@ import SettingsPanel from "../components/settings.component";
 import ProtectedRoute from "../components/ProtectedRoute.component";
 import toast, { Toaster } from "react-hot-toast";
 import { uploadImage } from "../common/aws";
+import InPageNavigation from "../components/inpage-navigation.components";
+import SmallPost from "../components/smallPost.Component";
+import { FilterPagination } from "../common/filterPagination";
+import Loader from "../components/Loader.component";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export const profileDataStructure = {
     personal_info: {
@@ -52,15 +57,11 @@ function ProfilePage() {
         });
     };
 
-    useEffect(() => {
-        fetchUserProfile();
-        if (profileLoaded) {
-            resetState();
-        }
-    }, [profileId]);
+
 
     const resetState = () => {
         setProfile(profileDataStructure);
+        setUserPost(null);
     };
 
     const handleSelectedNavbarButton = (buttonName) => {
@@ -120,23 +121,62 @@ function ProfilePage() {
 
     let profileNavbarButtons = [
         {
-            buttonImage: "fi fi-rr-grid",
-            buttonName: "POSTS",
+            image: "fi fi-rr-grid",
+            name: "POSTS",
         },
         {
-            buttonImage: "fi fi-tr-films",
-            buttonName: "REELS",
+            image: profile_username == username ? "fi fi-rr-bookmark" : "fi fi-tr-films",
+            name: profile_username == username ? "SAVED" : "REELS",
         },
         {
-            buttonImage: "fi fi-rr-bookmark",
-            buttonName: "SAVED",
+            image: "fi fi-rr-tags",
+            name: "TAGGED",
         },
     ];
+
+    let [ userPost, setUserPost] = useState(null);
+
+    const fetchUserPost = ({ page = 1 }) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/user-posts", {
+                username: profile_username,
+                page,
+            })
+            .then(async ({ data }) => {
+
+                let formattedData = await FilterPagination({
+                    state: userPost,
+                    data: data.post,
+                    page,
+                    data_to_send: {profile_username},
+                    countRoute: "/user-posts-count",
+                });
+                console.log(formattedData);
+                setUserPost(formattedData);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    useEffect( () => {
+        fetchUserProfile();
+        if(profileLoaded){
+            resetState();
+            setProfileLoaded(false);
+        }
+    }, [profileId]);
+
+    useEffect( () => {
+        if (profileLoaded) {
+            fetchUserPost({ page: 1 });
+            // setProfileLoaded(false);
+        }
+    }, [profileLoaded]);
 
     return (
         <ProtectedRoute>
             <Toaster></Toaster>
-            <div>
+            <div className="justify-center">
                 <div
                     style={{
                         height: "235px",
@@ -144,9 +184,9 @@ function ProfilePage() {
                         marginTop: "30px",
                         display: "flex",
                         flexDirection: "row",
-                        marginLeft: "40px",
                         borderBottom: "1px solid #333333",
                     }}
+                    className="mx-auto"
                 >
                     {/* profile pic */}
                     <div
@@ -184,7 +224,6 @@ function ProfilePage() {
                             }}
                         >
                             <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
-                            
                             <Link to={"/accounts/edit"}
                                 className={
                                     profile_username == username
@@ -279,42 +318,34 @@ function ProfilePage() {
                     </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                    <div
-                        style={{
-                            height: "50px",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            color: "white",
-                            fontSize: 13,
-                        }}
-                    >
-                        {profileNavbarButtons.map((elements) => (
-                            <button
-                                key={elements.buttonName}
-                                onClick={() =>
-                                    handleSelectedNavbarButton(
-                                        elements.buttonName
-                                    )
-                                }
-                                style={{
-                                    ...profileNavbar,
-                                    borderTop:
-                                        selectedNavbarButton ===
-                                        elements.buttonName
-                                            ? "2px solid white"
-                                            : "none",
-                                }}
-                            >
-                                <i className={`${elements.buttonImage}`}></i>
-                                <h1 style={{ marginLeft: "7px" }}>
-                                    {elements.buttonName}
-                                </h1>
-                            </button>
-                        ))}
-                    </div>
+                <div className="h-full w-full overflow-y-auto">
+                    <InPageNavigation routes={profileNavbarButtons}>
+                    {         
+                            userPost == null
+                            ?
+                            <Loader></Loader>
+                            :
+                                <InfiniteScroll dataLength={userPost.results.length} next={() => fetchUserPost({ page: userPost.page + 1, }) } hasMore={ userPost.results.length < userPost.totalDocs } loader={ <h4 style={{ color: "white" }}> .................... </h4> } >
+                                    <div className="flex flex-col gap-4">
+                                        {Array.from({ length: Math.ceil(userPost.results.length / 3) }, (_, index) => (
+                                            <div className="flex gap-2" key={index}>
+                                            {userPost.results
+                                                .slice(index * 3, index * 3 + 3)
+                                                .map(
+                                                ({ activity: { total_likes, total_views }, des, link, post_id, likes_hide, comment_hide }, id) => (
+                                                    <SmallPost link={link} key={post_id || id} />
+                                                )
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </InfiniteScroll>         
+                        }
+
+                        
+                        <h1> Saved </h1>
+                        <h1> Liked </h1>
+                    </InPageNavigation>
                 </div>
             </div>
         </ProtectedRoute>

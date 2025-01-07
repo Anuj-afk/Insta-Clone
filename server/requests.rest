@@ -1,6 +1,6 @@
-POST http://127.0.0.1:3000/reload
+POST http://127.0.0.1:3000/user-posts-count
 Content-Type: application/json
 
 {
-    "username": "anujg6263"
+    "profile_username": "anujg6263"
 }

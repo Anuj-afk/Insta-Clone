@@ -53,7 +53,6 @@ const generateUploadUrl = async (fileType) => {
 }
 
 const verifyJwt = (req, res, next) => {
-    console.log("verify")
     const token = req.headers.authorization?.split(" ")[1];
     if(!token) {
         return res.status(401).json({"error": "No token provided"})
@@ -88,6 +87,9 @@ const formatDatatoSend = (user) => {
         profile_img: user.personal_info.profile_img,
         username: user.personal_info.username,
         fullname: user.personal_info.fullname,
+        email: user.personal_info.email,
+        bio: user.personal_info.bio,
+        gender: user.personal_info.gender,
     }
 }
 
@@ -315,7 +317,6 @@ server.post("/profile_Image", verifyJwt, (req, res) => {
     let userId = req.user;
     console.log(userId)
     let {url} = req.body;
-    console.log(userId);
     User.findByIdAndUpdate(userId, {$set: {"personal_info.profile_img": url}})
     .then(post => {
         return res.status(200).json(post)
@@ -323,6 +324,51 @@ server.post("/profile_Image", verifyJwt, (req, res) => {
     .catch(err => {
         console.log(err.message);
         return res.status(500).json({"error": "error occured while updating profile image"})
+    })
+})
+
+server.post("/update-profile", verifyJwt, (req, res) => {
+    let {bio, gender} = req.body;
+    let userId = req.user;
+    User.findByIdAndUpdate(userId, {$set: {"personal_info.gender": gender, "personal_info.bio": bio}})
+    .then(user => {
+        return res.status(200).json({"success": "Profile Updated"})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while updating profile"})
+    })
+
+})
+
+server.post("/user-posts", async (req, res) => {
+    let {username, page} = req.body;
+    let maxLimit = 3;
+    const userid = await User.findOne({ "personal_info.username": username }).select('_id');
+    Post.find({"author": userid})
+    .sort({"publishedAt": -1})
+    .skip((page-1)*maxLimit)
+    .select("post_id des activity.total_likes activity_total_comments activity.total_views link comments likes_hide comment_hide")
+    .limit(maxLimit)
+    .then(post => {
+        return res.status(200).json({post})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while fetching latest posts"})
+    })
+})
+
+server.post("/user-posts-count", async (req, res) => {
+    let {profile_username} = req.body;
+    const userid = await User.findOne({ "personal_info.username": profile_username }).select('_id');
+    Post.find({"author": userid}).countDocuments()
+    .then(count => {
+        return res.status(200).json({totalDocs: count})
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": "error occured while fetching total posts"})
     })
 })
 

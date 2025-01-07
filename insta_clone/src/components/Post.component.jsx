@@ -74,7 +74,7 @@ function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, commen
     return (
         <div>
             <div
-                className="card mb-3 max-w-[490px]"
+                className="card mb-3 max-w-[470px]"
                 style={{ borderBottom: "0.5px solid darkgray" }}
             >
                 <div
@@ -119,33 +119,32 @@ function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, commen
                         </h1>
                     </button>
                 </div>
-                {/* {console.log(link.endsWith(".jpeg"))}
-                {console.log(link.split(".")[1])} */}
-                {link.endsWith(".jpeg") ?                
-                    <img
-                        src={link}
-                        className="card-img-top"
-                        alt="..."
-                        style={{ width: "490px" ,border:'1px solid gray'}}
-                    /> 
-                    :
-                    <video
-                        controls
-                        style={{
-                            maxWidth: "100%",
-                            maxHeight: "100%",
-                        }}
-                    >
-                        <source
+                {link.endsWith(".jpeg") ?
+                    <div>
+                        <img
                             src={link}
-                            type= "video/mp4"
-                        />
-                        Your browser does not support the video
-                        tag.
-                    </video>
+                            className="card-img-top"
+                            alt="..."
+                            style={{ width: "490px" ,border:'1px solid gray'}}
+                        /> 
+                    </div>             
+                    :
+                    <div className=" h-[585px] w-[470px] px-[70px] border border-dark-grey">
+                        <video
+                            controls
+                            className="min-h-full object-fill"
+                        >
+                            <source
+                                src={link}
+                                type= "video/mp4"
+                            />
+                            Your browser does not support the video
+                            tag.
+                        </video>
+                    </div>
                 }
 
-                <div className="card-footer bg-transparent border-light">
+                <div className="card-footer bg-transparent border-light mt-2">
                     <div
                         style={{
                             height: "40px",

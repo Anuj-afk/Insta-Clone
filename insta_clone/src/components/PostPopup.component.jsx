@@ -205,11 +205,6 @@ const Postpopup = () => {
                                     overflow: "hidden",
                                 }}
                             >
-                                {console.log(newBanner)}
-                                {console.log(previewUrl)}
-                                {console.log(
-                                    newBanner.type.startsWith("image/")
-                                )}
                                 {newBanner.type.startsWith("image/") ? (
                                     <img
                                         src={previewUrl}

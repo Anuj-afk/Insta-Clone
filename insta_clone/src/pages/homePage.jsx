@@ -32,9 +32,7 @@ const HomePage = () => {
                     totalPages: data.total_pages,
                     countRoute: "/all-latest-posts-count",
                 });
-                console.log(formattedData);
                 setLatestPost(formattedData);
-                console.log(formattedData.page);
             })
             .catch((err) => {
                 console.log(err);
