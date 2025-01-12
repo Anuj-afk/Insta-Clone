@@ -23,6 +23,7 @@ export const profileDataStructure = {
         total_posts: 0,
         total_followers: 0,
         total_following: 0,
+        story: false,
     },
 };
 
@@ -40,7 +41,7 @@ function ProfilePage() {
             profile_img,
             bio,
         },
-        account_info: { total_posts, total_followers, total_following },
+        account_info: { total_posts, total_followers, total_following, story},
     } = profile;
     let {
         userAuth, userAuth: { username, accessToken }, setUserAuth,
@@ -176,6 +177,7 @@ function ProfilePage() {
     return (
         <ProtectedRoute>
             <Toaster></Toaster>
+            {console.log(story)}
             <div className="justify-center">
                 <div
                     style={{
@@ -332,7 +334,7 @@ function ProfilePage() {
                                             {userPost.results
                                                 .slice(index * 3, index * 3 + 3)
                                                 .map(
-                                                ({ activity: { total_likes, total_views }, des, link, post_id, likes_hide, comment_hide }, id) => (
+                                                ({ activity: { total_likes, total_views }, des, link, post_id, likes_hide, comment_hide, story}, id) => (
                                                     <SmallPost link={link} key={post_id || id} />
                                                 )
                                                 )}

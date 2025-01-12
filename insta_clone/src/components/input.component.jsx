@@ -6,6 +6,7 @@ const InputBox = ({name, type, id, value, placeholder, icon, pClass, values = []
     const [selectedOption, setSelectedOption] = useState(values.includes(value) ? value : "Custom");
     const [selectedValue, setSelectedValue] = useState(value);
     const [inputValue, setInputValue] = useState(values.includes(value) ? "" : value);
+    const [checked , setChecked] = useState(false);
 
     const[passwordVisible, setPasswordVisible] = useState(false);
     const[des, setDes] = useState(0);
@@ -39,35 +40,37 @@ const InputBox = ({name, type, id, value, placeholder, icon, pClass, values = []
     });
 
     return(
-        <div className="relative w-[100%] mb-4">
+        <>
             {
                 type == "select" 
                 ?
-                <select name={name} className={"input-box bg-black border option:bg-white border-dark-grey text-white " + ( pClass ? " placeholder:text-dark-grey placeholder:-translate-x-8 placeholder:-translate-y-2 " : " placeholder:text-white")} placeholder={placeholder}>
-                    {
-                        values.map((value, i) => {
-                            if(value == "Prefer not to say"){
+                <div className="relative w-[100%] mb-4">
+                    <select name={name} className={"input-box bg-black border option:bg-white border-dark-grey text-white " + ( pClass ? " placeholder:text-dark-grey placeholder:-translate-x-8 placeholder:-translate-y-2 " : " placeholder:text-white")} placeholder={placeholder}>
+                        {
+                            values.map((value, i) => {
+                                if(value == "Prefer not to say"){
+                                    return(
+                                        <option value={value} key={i} className="option" selected>Prefer not to say</option>
+                                    )
+                                }
                                 return(
-                                    <option value={value} key={i} className="option" selected>Prefer not to say</option>
+                                    <option value={value} key={i} className="option">{value}</option>
                                 )
-                            }
-                            return(
-                                <option value={value} key={i} className="option">{value}</option>
-                            )
-                        })
-                    }
-                </select>
+                            })
+                        }
+                    </select>
+                </div>
                 :
                 type == "textarea"
                 ?
-                <>
-                    <textarea name={name} maxLength={characterLimit} defaultValue={value} placeholder={placeholder} className={" rounded-xl w-full h-full px-2 py-2 resize-none text-white bg-black border border-dark-grey"+ ( pClass ? " placeholder:text-dark-grey" : " placeholder:text-white")} onChange={handleBlogDesChange}></textarea>
+                <div className={"relative w-[100%] mb-4 " + (pClass)} >
+                    <textarea name={name} maxLength={characterLimit} defaultValue={value} placeholder={placeholder} className={" rounded-xl w-full h-full px-2 py-2 resize-none text-white bg-hover "+ ( pClass ? " placeholder:text-dark-grey" : " placeholder:text-white")} onChange={handleBlogDesChange}></textarea>
                     <p className="absolute right-4 bottom-4 text-dark-grey text-sm">{des}/{characterLimit}</p>
-                </>
+                </div>
                 :
                 type == "dropdown"
                 ?
-                <>
+                <div className="relative w-[100%] mb-4">
                     <input name={name} value={selectedValue} className="-z-10" readOnly hidden></input>
                     <button id="dropdownButton" className={"inline-flex w-full h-full text-lg font-medium text-white rounded-xl border border-dark-grey py-5 px-2 hover:bg-hover" + (selectedOption == "Custom" ? inputValue.length ? "" : " border-red " : "")} onClick={handleDropdown}>
                         <p className="">{selectedValue}</p>
@@ -95,18 +98,31 @@ const InputBox = ({name, type, id, value, placeholder, icon, pClass, values = []
                             }
                         </div>
                     </div>
-                </>  
+                </div>  
                 :
+                type == "Toggle"
+                ?
                 <>
+                    <input name={name} value={checked} className="-z-10" readOnly hidden></input>
+                    <label className="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" className="sr-only peer" onChange={() => {setChecked(!checked)}} />
+                        <div className="relative w-11 h-6 bg-dark-grey rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-hover after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-white"></div>
+                    </label>
+                </>
+
+
+
+                :
+                <div className="relative w-[100%] mb-4">
                     <input name={name} type={type == "password" ? passwordVisible ? "text" : "password" : type} placeholder={placeholder} defaultValue={value} id={id} className={"input-box bg-black border border-dark-grey " + ( pClass ? " placeholder:text-dark-grey placeholder:-translate-x-8 placeholder:-translate-y-2" : " placeholder:text-white")} />
                     <i className= {("fi "+ icon +" input-icon") + " text-white"}></i>
                     {
                         type == "password" ?
                         <i className={"fi fi-rr-eye" + (!passwordVisible? "-crossed": "") + " input-icon left-[auto] right-4 cursor-pointer"} onClick={() => setPasswordVisible(currentVal => !currentVal)}></i> : ""
                     }
-                </>
+                </div>
             }
-        </div>
+        </>
     )
 }
 

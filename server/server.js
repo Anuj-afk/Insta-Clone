@@ -238,8 +238,8 @@ server.post("/get-profile", (req, res) => {
 server.post("/post", verifyJwt, (req, res) => {
     let userId = req.user;
 
-    let {des, likes_hide, comment_hide, link} = req.body;
-    if(!des.length){
+    let {Description, Likes, Comments, Story, link} = req.body;
+    if(!Description.length){
         return res.status(403).json({"error": "Description is required"})
     }
     if(!link.length){
@@ -247,12 +247,22 @@ server.post("/post", verifyJwt, (req, res) => {
     }
     let post_id = Math.floor(Math.random() * 1000000000000);
     let posts = new Post({
-        des, likes_hide, comment_hide, link, post_id, author: userId
+        des: Description, likes_hide: Likes, comment_hide: Comments, link, story: Story, post_id, author: userId
     })
 
     posts.save().then((post) => {
         let incrementVal = 1;
-        User.findByIdAndUpdate(userId, {$inc: {"account_info.total_posts": incrementVal}, $push: {"posts": post._id}})
+        Story ?
+        User.findByIdAndUpdate(userId, {$inc: {"account_info.total_posts": incrementVal}, $push: {"posts": post._id,}, $set: {"account_info.story": Story}})
+        .then(user => {
+            return res.status(200).json({id: posts.post_id})
+        })
+        .catch(err => {
+            console.log(err.message);
+            return res.status(500).json({"error": "failed to upload total posts number"})
+        })
+        :
+        User.findByIdAndUpdate(userId, {$inc: {"account_info.total_posts": incrementVal}, $push: {"posts": post._id,}})
         .then(user => {
             return res.status(200).json({id: posts.post_id})
         })
@@ -276,7 +286,7 @@ server.post("/latest-posts", (req, res) => {
     Post.find().populate("author", "personal_info.fullname personal_info.profile_img personal_info.username -_id")
     .sort({"publishedAt": -1})
     .skip((page-1)*maxLimit)
-    .select("post_id des activity.total_likes activity_total_comments activity.total_views link comments likes_hide comment_hide")
+    .select("post_id des activity.total_likes activity.total_comments activity.total_views link comments likes_hide comment_hide story")
     .limit(maxLimit)
     .then(post => {
         return res.status(200).json({post})
@@ -348,7 +358,7 @@ server.post("/user-posts", async (req, res) => {
     Post.find({"author": userid})
     .sort({"publishedAt": -1})
     .skip((page-1)*maxLimit)
-    .select("post_id des activity.total_likes activity_total_comments activity.total_views link comments likes_hide comment_hide")
+    .select("post_id des activity.total_likes activity_total_comments activity.total_views link comments likes_hide comment_hide story")
     .limit(maxLimit)
     .then(post => {
         return res.status(200).json({post})

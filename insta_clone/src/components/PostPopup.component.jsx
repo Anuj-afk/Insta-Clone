@@ -6,6 +6,8 @@ import EmojiPicker from "emoji-picker-react";
 import axios from "axios";
 import { UserContext } from "../App";
 import { Postrefrence } from "./sidebar.Component";
+import InputBox from "./input.component";
+import { Form } from "react-router-dom";
 
 const postStructure = {
     des: "",
@@ -14,8 +16,6 @@ const postStructure = {
     link: "",
 };
 const Postpopup = () => {
-    const [isCheckedComm, setIsCheckedComm] = useState(false);
-    const [isCheckedLike, setIsCheckedLike] = useState(false);
     const [newBanner, setNewBanner] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [newBannerDescription, setNewBannerDescription] = useState("");
@@ -29,15 +29,7 @@ const Postpopup = () => {
     const {createPopUp, setCreatePopUp} = useContext(Postrefrence);
 
     let { des, likes_hide, comment_hide, link } = post;
-    const handleHideLikes = (e) => {
-        setIsCheckedLike((prev) => !prev);
-        setPost({ ...post, likes_hide: !likes_hide });
-    };
 
-    const handleTurnOffCommenting = (e) => {
-        setIsCheckedComm((prev) => !prev);
-        setPost({ ...post, comment_hide: !comment_hide });
-    };
 
     const closePopup = () => {
         setCreatePopUp(false);
@@ -56,17 +48,12 @@ const Postpopup = () => {
         setIsCheckedLike(false);
     };
 
-    const PublishPost = (url) => {
-        if (!des.length) {
+    const PublishPost = (url, formData) => {
+        if (!formData.Description.length) {
             return toast.error("Add a Des to Publish");
         }
-        let postObj = {
-            des,
-            likes_hide,
-            comment_hide,
-            link: url,
-        };
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/post", postObj, {
+        formData["link"] = url;
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/post", formData, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -87,12 +74,14 @@ const Postpopup = () => {
         }
     };
 
-    const handleDiscriptionChange = (event) => {
-        setPost({ ...post, des: event.target.value });
-        setNewBannerDescription(event.target.value);
-    };
-
-    const handleUpload = () => {
+    const handleUpload = (e) => {
+        e.preventDefault();
+        let form = new FormData(PostForm);
+        let formData = {};
+        for (let [key, value] of form.entries()) {
+            formData[key] = value;
+        }
+        console.log(formData)
         if (newBanner) {
             let loadingToast = toast.loading("Uploading ...");
             uploadImage(newBanner, newBanner.type)
@@ -100,7 +89,7 @@ const Postpopup = () => {
                     if (url) {
                         toast.dismiss(loadingToast);
                         toast.success("uploaded successfully");
-                        PublishPost(url);
+                        PublishPost(url, formData);
                         clearState();
                     }
                 })
@@ -113,7 +102,6 @@ const Postpopup = () => {
                 });
         } else {
             toast.error("Please select a photo to upload.");
-            return;
         }
     };
 
@@ -171,7 +159,7 @@ const Postpopup = () => {
                                 ></i>
                             </button>
                             <h1>Create new post</h1>
-                            <button onClick={handleUpload}>
+                            <button onClick={(e) => handleUpload(e)}>
                                 <h1
                                     style={{
                                         color: "#0095F6",
@@ -203,6 +191,7 @@ const Postpopup = () => {
                                     flexDirection: "column",
                                     backgroundColor: "black",
                                     overflow: "hidden",
+                                    gap: 2,
                                 }}
                             >
                                 {newBanner.type.startsWith("image/") ? (
@@ -232,7 +221,7 @@ const Postpopup = () => {
                                 )}
                             </div>
 
-                            <div
+                            <form
                                 style={{
                                     width: "340px",
                                     height: "480px",
@@ -241,55 +230,26 @@ const Postpopup = () => {
                                     alignItems: "center",
                                     flexDirection: "column",
                                 }}
+                                id="PostForm"
                             >
-                                <textarea
-                                    rows="6"
-                                    value={newBannerDescription}
-                                    onChange={handleDiscriptionChange}
-                                    style={{
-                                        maxHeight: "170px",
-                                        minHeight: "170px",
-                                        width: "322px",
-                                        backgroundColor: "#262626",
-                                        marginTop: "7px",
-                                        padding: "5px",
-                                        color: "white",
-                                        border: "0px",
-                                        resize: "none",
-                                    }}
-                                ></textarea>
-                                <div
-                                    style={{
-                                        height: "50px",
-                                        width: "322px",
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                    }}
+                                <InputBox type={"textarea"} name={"Description"} characterLimit={2200} pClass={"h-40 mx-2"}></InputBox>
+                                <button
+                                    className="left-0 -translate-y-14 -translate-x-[45%] w-full"
+                                    onClick={() =>
+                                        setShowEmojiPicker(!showEmojiPicker)
+                                    }
                                 >
-                                    <button
-                                        onClick={() =>
-                                            setShowEmojiPicker(!showEmojiPicker)
-                                        }
-                                    >
-                                        <i
-                                            className="fi fi-rr-smile"
-                                            style={{
-                                                color: "gray",
-                                                fontSize: 20,
-                                                marginLeft: "10px",
-                                            }}
-                                        ></i>
-                                    </button>
-                                    <h1
+                                    <i
+                                        className="fi fi-rr-smile -translate-y-[100px]"
                                         style={{
                                             color: "gray",
-                                            fontSize: 13,
-                                            marginRight: "10px",
+                                            fontSize: 20,
+                                            marginLeft: "10px",
                                         }}
-                                    >{`${newBannerDescription.length}/2200`}</h1>
-                                </div>
+                                    ></i>
+                                </button>
                                 <EmojiPicker
+                                    className=" -translate-y-[100px]"
                                     open={showEmojiPicker}
                                     onEmojiClick={handleEmojiSelect}
                                     style={{
@@ -316,15 +276,7 @@ const Postpopup = () => {
                                     <h1 style={{ color: "darkgray" }}>
                                         Hide Likes
                                     </h1>
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        role="switch"
-                                        id="flexSwitchCheckDefault"
-                                        style={{ marginBottom: "20px" }}
-                                        checked={isCheckedLike}
-                                        onClick={handleHideLikes}
-                                    />
+                                    <InputBox type={"Toggle"} name={"Likes"}></InputBox>
                                 </div>
                                 <div
                                     style={{
@@ -339,17 +291,24 @@ const Postpopup = () => {
                                     <h1 style={{ color: "darkgray" }}>
                                         Turn off Commenting
                                     </h1>
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        role="switch"
-                                        id="flexSwitchCheckDefault"
-                                        style={{ marginBottom: "20px" }}
-                                        checked={isCheckedComm}
-                                        onClick={handleTurnOffCommenting}
-                                    />
+                                    <InputBox type={"Toggle"} name={"Comments"}></InputBox>
                                 </div>
-                            </div>
+                                <div
+                                    style={{
+                                        width: "290px",
+                                        height: "40px",
+                                        color: "white",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <h1 style={{ color: "darkgray" }}>
+                                        Set as story
+                                    </h1>
+                                    <InputBox type={"Toggle"} name={"Story"}></InputBox>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 ) : (
@@ -405,6 +364,7 @@ const Postpopup = () => {
                                 type="file"
                                 onChange={handlenewBanner}
                                 style={{ display: "none" }}
+                                accept="image/*,video/*"
                             />
                         </div>
                     </div>

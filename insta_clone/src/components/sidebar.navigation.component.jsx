@@ -8,7 +8,7 @@ const SideNavigation = ({ to = "/", className, image, text, children, onClick, s
             {text === "Create" ? (
                 <button
                     className={"link " + className}
-
+                    onClick={onClick}
                 >
                     <i className={"text-white translate-y-[1px] text-[20px] " + image}></i>
                     <p

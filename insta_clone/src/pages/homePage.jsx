@@ -90,6 +90,7 @@ const HomePage = () => {
                                                 post_id,
                                                 likes_hide,
                                                 comment_hide,
+                                                story,
                                             },
                                             id
                                         ) => (
@@ -110,6 +111,7 @@ const HomePage = () => {
                                                     comment_hide={comment_hide}
                                                     post_id={post_id}
                                                     id={id}
+                                                    story={story}
                                                 />
                                             </div>
                                         )

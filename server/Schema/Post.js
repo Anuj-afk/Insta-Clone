@@ -46,6 +46,10 @@ const postSchema = mongoose.Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'users'
+    },
+    story: {
+        type: Boolean,
+        default: false
     }
 }, 
 { 

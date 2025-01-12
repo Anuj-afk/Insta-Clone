@@ -3,7 +3,8 @@ import CommentPopup from "./CommentPopup.component";
 import { latestPostContext } from "../pages/homePage";
 import axios from "axios";
 
-function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, comment_hide, post_id, id}) {
+function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, comment_hide, post_id, story, id}) {
+    console.log(story);
     const [likeIcon, setLikeIcon] = useState("fi fi-rs-heart");
     const [saveIcon, setSaveIcon] = useState("fi fi-rr-bookmark");
     // const [isVerified, setIsVerified] = useState(false);
