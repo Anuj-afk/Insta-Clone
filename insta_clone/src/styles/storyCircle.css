@@ -1,0 +1,5 @@
+.storyAddedTrue {
+  background: linear-gradient(45deg,#fcaf45,#fcaf45,#f77737,#fd1d1d,#e1306c,#c13584);
+  padding: 4px;
+  display: inline-block;
+}

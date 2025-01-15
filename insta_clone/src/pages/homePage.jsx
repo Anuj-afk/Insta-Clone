@@ -7,6 +7,7 @@ import AnimationWrapper from "../common/page.animation";
 import Loader from "../components/Loader.component";
 import { UserContext } from "../App";
 import ProtectedRoute from "../components/ProtectedRoute.component";
+import HomePageStoryBarComponent from '../components/HomePageStoryBar.components';
 
 const latestPostStructure = {
     results: [],
@@ -44,85 +45,81 @@ const HomePage = () => {
     }, []);
 
     return (
-        <ProtectedRoute>
-            <latestPostContext.Provider value={{ latestPost, setLatestPost }}>
-                <AnimationWrapper>
-                    {latestPost == null ? (
-                        <Loader></Loader>
-                    ) : (
-                        <div className="flex-1  items-center flex justify-center">
-                            <InfiniteScroll
-                                dataLength={latestPost.results.length}
-                                next={() =>
-                                    fetchLatestPost({
-                                        page: latestPost.page + 1,
-                                    })
-                                }
-                                hasMore={
-                                    latestPost.totalDocs / 5 > latestPost.page
-                                }
-                                loader={
-                                    <h4 style={{ color: "white" }}>
-                                        ....................
-                                    </h4>
-                                }
-                            >
-                                <div
-                                    className="container row"
-                                    style={{ marginTop: "120px" }}
-                                >
-                                    {latestPost.results.map(
-                                        (
-                                            {
-                                                activity: {
-                                                    total_likes,
-                                                    total_views,
-                                                },
-                                                author: {
-                                                    personal_info: {
-                                                        fullname,
-                                                        profile_img,
-                                                        username,
-                                                    },
-                                                },
-                                                des,
-                                                link,
-                                                post_id,
-                                                likes_hide,
-                                                comment_hide,
-                                                story,
-                                            },
-                                            id
-                                        ) => (
-                                            <div
-                                                className="col md-12"
-                                                key={id}
-                                                style={{
-                                                    marginBottom: "100px",
-                                                }}
-                                            >
-                                                <Post
-                                                    profile_img={profile_img}
-                                                    username={username}
-                                                    link={link}
-                                                    des={des}
-                                                    total_likes={total_likes}
-                                                    likes_hide={likes_hide}
-                                                    comment_hide={comment_hide}
-                                                    post_id={post_id}
-                                                    id={id}
-                                                    story={story}
-                                                />
-                                            </div>
-                                        )
-                                    )}
-                                </div>
-                            </InfiniteScroll>
-                        </div>
-                    )}
-                </AnimationWrapper>
-            </latestPostContext.Provider>
-        </ProtectedRoute>
+      <ProtectedRoute>
+        <latestPostContext.Provider value={{ latestPost, setLatestPost }}>
+          <AnimationWrapper>
+            {latestPost == null ? (
+              <Loader></Loader>
+            ) : (
+              <>
+                <HomePageStoryBarComponent stories={latestPost.results} />
+                <div className="flex-1  items-center flex justify-center">
+                  <InfiniteScroll
+                    dataLength={latestPost.results.length}
+                    next={() =>
+                      fetchLatestPost({
+                        page: latestPost.page + 1,
+                      })
+                    }
+                    hasMore={latestPost.totalDocs / 5 > latestPost.page}
+                    loader={
+                      <h4 style={{ color: "white" }}>....................</h4>
+                    }
+                  >
+                    <div
+                      className="container row"
+                      style={{ marginTop: "0px" }}
+                    >
+                      {latestPost.results.map(
+                        (
+                          {
+                            activity: { total_likes, total_views },
+                            author: {
+                              personal_info: {
+                                fullname,
+                                profile_img,
+                                username,
+                              },
+                            },
+                            des,
+                            link,
+                            post_id,
+                            likes_hide,
+                            comment_hide,
+                            story,
+                          },
+                          id
+                        ) => (
+                          <div
+                            className="col md-12"
+                            key={id}
+                            style={{
+                              marginBottom: "100px",
+                            }}
+                          >
+                            <Post
+                              profile_img={profile_img}
+                              username={username}
+                              link={link}
+                              des={des}
+                              total_likes={total_likes}
+                              likes_hide={likes_hide}
+                              comment_hide={comment_hide}
+                              post_id={post_id}
+                              id={id}
+                              story={story}
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </InfiniteScroll>
+                </div>
+              </>
+            )}
+          </AnimationWrapper>
+        </latestPostContext.Provider>
+      </ProtectedRoute>
     );
 };
 

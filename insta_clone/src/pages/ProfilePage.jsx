@@ -11,6 +11,7 @@ import SmallPost from "../components/smallPost.Component";
 import { FilterPagination } from "../common/filterPagination";
 import Loader from "../components/Loader.component";
 import InfiniteScroll from "react-infinite-scroll-component";
+import "../styles/storyCircle.css";
 
 export const profileDataStructure = {
     personal_info: {
@@ -33,6 +34,7 @@ function ProfilePage() {
     let { id: profileId } = useParams();
     let [profile, setProfile] = useState(profileDataStructure);
     let [profileLoaded, setProfileLoaded] = useState(false);
+
 
     let {
         personal_info: {
@@ -58,7 +60,7 @@ function ProfilePage() {
         });
     };
 
-
+    let [storyAdded, setStoryAdded] = useState(story);
 
     const resetState = () => {
         setProfile(profileDataStructure);
@@ -175,182 +177,213 @@ function ProfilePage() {
     }, [profileLoaded]);
 
     return (
-        <ProtectedRoute>
-            <Toaster></Toaster>
-            {console.log(story)}
-            <div className="justify-center">
-                <div
-                    style={{
-                        height: "235px",
-                        width: "900px",
-                        marginTop: "30px",
-                        display: "flex",
-                        flexDirection: "row",
-                        borderBottom: "1px solid #333333",
-                    }}
-                    className="mx-auto"
-                >
-                    {/* profile pic */}
-                    <div
-                        style={{
-                            height: "235px",
-                            width: "283px",
-                            display: "flex",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <div style={{ height: "150px", width: "150px" }} className={"aspect-video " + (profile_username == username ? " hover:opacity-80" : "" ) }>
-                            <label htmlFor="ProfileImg">
-                                <img src={profile_img} style={{ borderRadius: 100, border: "2px solid black",  }} referrerPolicy="no-referrer" className="w-full mx-auto"/>
-                                {
-                                    profile_username == username ? 
-                                    <input className={ profile_username == username ? "" : " hidden" } type="file" id="ProfileImg" style={{ display: "none" }} accept="image/*" onChange={handleImageUpload}></input>
-                                    : 
-                                    <>
-                                    </>
-                                }
-
-                            </label>
-                        </div>
-                    </div>
-
-                    {/* details */}
-                    <div>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                marginTop: "5px",
-                                color: "white",
-                                fontWeight: "500",
-                            }}
-                        >
-                            <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
-                            <Link to={"/accounts/edit"}
-                                className={
-                                    profile_username == username
-                                        ? ""
-                                        : " hidden"
-                                }
-                                style={{
-                                    whiteSpace: "nowrap",
-                                    backgroundColor: "#424242",
-                                    marginLeft: "15px",
-                                    paddingLeft: "15px",
-                                    paddingRight: "15px",
-                                    paddingTop: "2px",
-                                    paddingBottom: "2px",
-                                    color: "white",
-                                    borderRadius: 8,
-                                    fontWeight: 500,
-                                    fontSize: 14,
-                                }}
-                            >
-                                <h1>Edit Profile</h1>
-                            </Link>
-                            <div
-                                className="relative"
-                                onClick={handleSettingsPanel}
-                                onBlur={handleBlur}
-                            >
-                                <button>
-                                    <i
-                                        className="fi fi-sr-settings mt-1"
-                                        style={{ marginLeft: "400px" }}
-                                    ></i>
-                                </button>
-                                {settingsNavPanel ? (
-                                    <SettingsPanel></SettingsPanel>
-                                ) : (
-                                    ""
-                                )}
-                            </div>
-                        </div>
-
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                color: "white",
-                                marginTop: "20px",
-                                fontWeight: 500,
-                            }}
-                        >
-                            <h1> {total_posts} posts </h1>
-                            <h1 style={{ marginLeft: "20px" }}>
-                                {" "}
-                                {total_followers} followers
-                            </h1>
-                            <h1 style={{ marginLeft: "20px" }}>
-                                {" "}
-                                {total_following} following
-                            </h1>
-                        </div>
-
-                        <h1
-                            style={{
-                                fontSize: 18,
-                                color: "white",
-                                fontWeight: 500,
-                                marginTop: "18px",
-                            }}
-                        >
-                            {fullname}
-                        </h1>
-
-                        <div
-                            style={{
-                                color: "white",
-                                height: "auto",
-                                width: "550px",
-                                marginTop: "18px",
-                                borderRadius: "5px",
-                            }}
-                        >
-                            <p
-                                style={{
-                                    wordWrap: "break-word",
-                                    whiteSpace: "normal",
-                                    fontSize: 12,
-                                }}
-                            >
-                                {bio}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="h-full w-full overflow-y-auto">
-                    <InPageNavigation routes={profileNavbarButtons}>
-                    {         
-                            userPost == null
-                            ?
-                            <Loader></Loader>
-                            :
-                                <InfiniteScroll dataLength={userPost.results.length} next={() => fetchUserPost({ page: userPost.page + 1, }) } hasMore={ userPost.results.length < userPost.totalDocs } loader={ <h4 style={{ color: "white" }}> .................... </h4> } >
-                                    <div className="flex flex-col gap-4">
-                                        {Array.from({ length: Math.ceil(userPost.results.length / 3) }, (_, index) => (
-                                            <div className="flex gap-2" key={index}>
-                                            {userPost.results
-                                                .slice(index * 3, index * 3 + 3)
-                                                .map(
-                                                ({ activity: { total_likes, total_views }, des, link, post_id, likes_hide, comment_hide, story}, id) => (
-                                                    <SmallPost link={link} key={post_id || id} />
-                                                )
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </InfiniteScroll>         
-                        }
-
-                        
-                        <h1> Saved </h1>
-                        <h1> Liked </h1>
-                    </InPageNavigation>
-                </div>
+      <ProtectedRoute>
+        <Toaster></Toaster>
+        {console.log(story)}
+        <div className="justify-center">
+          <div
+            style={{
+              height: "235px",
+              width: "900px",
+              marginTop: "30px",
+              display: "flex",
+              flexDirection: "row",
+              borderBottom: "1px solid #333333",
+            }}
+            className="mx-auto"
+          >
+            {/* profile pic */}
+            <div
+              style={{
+                height: "235px",
+                width: "283px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{ height: "150px", width: "150px", borderRadius: "50%" }}
+                className={
+                  storyAdded
+                    ? `storyAddedTrue aspect-video ${
+                        profile_username === username ? "hover:opacity-80" : ""
+                      }`
+                    : `aspect-video ${
+                        profile_username === username ? "hover:opacity-80" : ""
+                      }`
+                }
+              >
+                <label htmlFor="ProfileImg">
+                  <img
+                    src={profile_img}
+                    style={{ borderRadius: 100, border: "2px solid black" }}
+                    referrerPolicy="no-referrer"
+                    className="w-full mx-auto"
+                  />
+                  {profile_username == username ? (
+                    <input
+                      className={profile_username == username ? "" : " hidden"}
+                      type="file"
+                      id="ProfileImg"
+                      style={{ display: "none" }}
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    ></input>
+                  ) : (
+                    <></>
+                  )}
+                </label>
+              </div>
             </div>
-        </ProtectedRoute>
+
+            {/* details */}
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginTop: "5px",
+                  color: "white",
+                  fontWeight: "500",
+                }}
+              >
+                <h1 style={{ fontSize: 18 }}>{profile_username}</h1>
+                <Link
+                  to={"/accounts/edit"}
+                  className={profile_username == username ? "" : " hidden"}
+                  style={{
+                    whiteSpace: "nowrap",
+                    backgroundColor: "#424242",
+                    marginLeft: "15px",
+                    paddingLeft: "15px",
+                    paddingRight: "15px",
+                    paddingTop: "2px",
+                    paddingBottom: "2px",
+                    color: "white",
+                    borderRadius: 8,
+                    fontWeight: 500,
+                    fontSize: 14,
+                  }}
+                >
+                  <h1>Edit Profile</h1>
+                </Link>
+                <div
+                  className="relative"
+                  onClick={handleSettingsPanel}
+                  onBlur={handleBlur}
+                >
+                  <button>
+                    <i
+                      className="fi fi-sr-settings mt-1"
+                      style={{ marginLeft: "400px" }}
+                    ></i>
+                  </button>
+                  {settingsNavPanel ? <SettingsPanel></SettingsPanel> : ""}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  color: "white",
+                  marginTop: "20px",
+                  fontWeight: 500,
+                }}
+              >
+                <h1> {total_posts} posts </h1>
+                <h1 style={{ marginLeft: "20px" }}>
+                  {" "}
+                  {total_followers} followers
+                </h1>
+                <h1 style={{ marginLeft: "20px" }}>
+                  {" "}
+                  {total_following} following
+                </h1>
+              </div>
+
+              <h1
+                style={{
+                  fontSize: 18,
+                  color: "white",
+                  fontWeight: 500,
+                  marginTop: "18px",
+                }}
+              >
+                {fullname}
+              </h1>
+
+              <div
+                style={{
+                  color: "white",
+                  height: "auto",
+                  width: "550px",
+                  marginTop: "18px",
+                  borderRadius: "5px",
+                }}
+              >
+                <p
+                  style={{
+                    wordWrap: "break-word",
+                    whiteSpace: "normal",
+                    fontSize: 12,
+                  }}
+                >
+                  {bio}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-full w-full overflow-y-auto">
+            <InPageNavigation routes={profileNavbarButtons}>
+              {userPost == null ? (
+                <Loader></Loader>
+              ) : (
+                <InfiniteScroll
+                  dataLength={userPost.results.length}
+                  next={() => fetchUserPost({ page: userPost.page + 1 })}
+                  hasMore={userPost.results.length < userPost.totalDocs}
+                  loader={
+                    <h4 style={{ color: "white" }}> .................... </h4>
+                  }
+                >
+                  <div className="flex flex-col gap-4">
+                    {Array.from(
+                      { length: Math.ceil(userPost.results.length / 3) },
+                      (_, index) => (
+                        <div className="flex gap-2" key={index}>
+                          {userPost.results
+                            .slice(index * 3, index * 3 + 3)
+                            .map(
+                              (
+                                {
+                                  activity: { total_likes, total_views },
+                                  des,
+                                  link,
+                                  post_id,
+                                  likes_hide,
+                                  comment_hide,
+                                  story,
+                                },
+                                id
+                              ) => (
+                                <SmallPost link={link} key={post_id || id} />
+                              )
+                            )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </InfiniteScroll>
+              )}
+
+              <h1> Saved </h1>
+              <h1> Liked </h1>
+            </InPageNavigation>
+          </div>
+        </div>
+      </ProtectedRoute>
     );
 }
 
