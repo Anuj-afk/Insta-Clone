@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import CommentPopup from "./CommentPopup.component";
 import { latestPostContext } from "../pages/homePage";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, comment_hide, post_id, story, id}) {
     console.log(story);
@@ -102,7 +103,8 @@ function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, commen
                             }}
                             alt="..."
                         />
-                        <h1
+                        <Link
+                            to={`profile/${username}`}
                             style={{
                                 fontSize: 16,
                                 marginLeft: 8,
@@ -112,7 +114,7 @@ function Post({profile_img ,username ,link ,des ,total_likes ,likes_hide, commen
                             }}
                         >
                             {username}
-                        </h1>
+                        </Link>
                     </div>
                     <button>
                         <h1 style={{ color: "white", fontWeight: "bold" }}>

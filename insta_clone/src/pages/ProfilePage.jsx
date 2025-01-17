@@ -179,7 +179,6 @@ function ProfilePage() {
     return (
       <ProtectedRoute>
         <Toaster></Toaster>
-        {console.log(story)}
         <div className="justify-center">
           <div
             style={{
